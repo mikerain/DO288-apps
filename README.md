@@ -16,7 +16,9 @@ git push --set-upstream origin OCP-3.6
 oc adm -h
 oc debug
 ###################################################################################################################################################################################################
+
 <--DO288-START
+
 --image-stream or -i Provides the image stream to be used as either the S2I builder image for an S2I build or to deploy a container image. 
 --strategy Provides the build strategy, usually docker or source. 
 --code Provides the URL to a Git repository to be used as input to an S2I build. 
