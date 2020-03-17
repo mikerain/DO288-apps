@@ -1,4 +1,9 @@
 # DO288 Containerized Example Applications
 
-This repository contains a collection of sample containerized applications. 
- To complete the course you need to fork this repo into your personal Github account.
+
+oc new-app https://github.com/openshift/ruby-hello-world -l name=hello-world
+oc new-app https://github.com/openshift/test-maven-app -l name=my-maven-app
+oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
+
+app-config
+
