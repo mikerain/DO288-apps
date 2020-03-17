@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi7
+FROM registry.access.redhat.com/rhel7:7.3
 
 
 RUN yum install -y --disableplugin=subscription-manager  nginx \
