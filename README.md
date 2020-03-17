@@ -6,6 +6,11 @@ oc new-app https://github.com/openshift/test-maven-app -l name=my-maven-app
 
 oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
+
+#chapter1
+
+[app-config]
+
 #chapter2
 
 [app-config]
@@ -35,4 +40,12 @@ oc edit configmap/myconfig
 oc create secret generic myappfilesec  --from-file myapp.sec 
  
 oc set volume dc/myapp --add  -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
+[app-config]
+
+[hello-swarm]  design-container
+hello-java 
+cd hello-java
+oc new-project chapter2-hello-swarm-design-container
+oc new-app --name hello https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
+[hello-swarm]
 
