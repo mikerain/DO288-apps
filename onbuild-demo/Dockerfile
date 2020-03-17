@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi7
 
 
-RUN yum install -y --disableplugin=subscription-manager --nodocs nginx \
+RUN yum install -y --disableplugin=subscription-manager  nginx \
   && yum clean all
 
 ADD index.html /usr/share/nginx/html
