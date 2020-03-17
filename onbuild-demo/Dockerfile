@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/rhel7:7.3
 
 
-RUN yum install -y --disableplugin=subscription-manager  nginx \
+RUN yum install -y   nginx \
   && yum clean all
 
 ADD index.html /usr/share/nginx/html
