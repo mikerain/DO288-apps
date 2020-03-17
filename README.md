@@ -19,6 +19,10 @@ oc get -o json cm/myconfig
 
 oc set env dc/myapp --from cm/myconfig
 
+oc edit configmap/myconfig
+
+ oc rollout latest dc/myapp 
+
 oc create secret generic myappfilesec  --from-file myapp.sec 
  
 oc set volume dc/myapp --add  -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
