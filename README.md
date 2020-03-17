@@ -6,7 +6,9 @@ oc new-app https://github.com/openshift/test-maven-app -l name=my-maven-app
 oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
 chapter2
+
 [app-config]
+
 oc new-project  chapter2-app-config 
 git clone https://github.com/woyaowoyao/DO288-apps
 DO288-apps/app-config
