@@ -47,5 +47,9 @@ hello-java
 cd hello-java
 oc new-project chapter2-hello-swarm-design-container
 oc new-app --name hello https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
+oc logs -f bc/hello
+oc get pods 
+
+
 [hello-swarm]
 
