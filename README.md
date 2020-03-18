@@ -59,5 +59,5 @@ oc set env dc/hello --from cm/appconfig
 [java-serverhost]   manage-builds 
 cd java-serverhost
 oc new-project chapter4-java-serverhost-manage-builds 
-oc new-app --name jhost  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
+oc new-app --name jhost -i  -i redhat-openjdk18-openshift  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
 [java-serverhost]  
