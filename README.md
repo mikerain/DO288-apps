@@ -59,5 +59,14 @@ oc set env dc/hello --from cm/appconfig
 [java-serverhost]   manage-builds 
 cd java-serverhost
 oc new-project chapter4-java-serverhost-manage-builds 
-oc new-app --name jhost -i  -i redhat-openjdk18-openshift  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
+oc import-image redhat-openjdk18-openshift --confirm  --reference-policy='local' --from docker.io/redhatopenjdk/redhat-openjdk18-openshift --insecure -n openshift
+oc new-app --name jhost -i  redhat-openjdk18-openshift  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
+
+failed--
+
+oc new-app --name jhost -i  wildfly:9.0  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
+oc new-app -S jee
 [java-serverhost]  
+
+[trigger-builds ]
+docker pull  registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14
