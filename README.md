@@ -147,5 +147,23 @@ oc new-project strategy
 
  oc new-app --name mysql  -e MYSQL_USER=test -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=testdb  --docker-image docker.io/centos/mysql-57-centos7  --insecure-registry
 
+oc get pods -o wide 
+
+oc describe dc/mysql | grep 'Strategy:' 
+
+ oc set triggers dc/mysql --from-config --remove 
+
+ oc patch dc/mysql --patch  '{"spec":{"strategy":{"type":"Recreate"}}}' 
+
+ oc patch dc/mysql --type=json    -p='[{"op":"remove", "path": "/spec/strategy/rollingParams"}]' 
 
 [strategy]
+
+[camel-hello]
+oc new-app --name camelHelloApp  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/camel-hello
+[camel-hello]
+
+
+[camel-hello]
+oc new-app --name camelTimeApp  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/camel-timer
+ [camel-hello]
