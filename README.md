@@ -82,3 +82,54 @@ vi /etc/hosts
 
  oc expose svc/trigger
 
+http://trigger-trigger-builds.apps.os311.test.it.example.com/
+
+ oc import-image php:latest -n openshift 
+
+ oc get -o json -n openshift is php | grep image     | grep sha256 | head -n 3 
+work well
+
+[trigger-builds]
+
+[post-commit]  build-for-managers 
+oc new-project post-commit
+oc new-app --name builds-for-managers https://github.com/woyaowoyao/DO288-apps.git --context-dir=builds-for-managers
+
+oc new-app --name post-commit https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
+[post-commit]
+
+[build-app]
+ oc new-project build-app
+
+oc new-app --name simple  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/build-app
+oc expose svc/simple
+oc describe bc simple
+#exes-build-app
+
+$ cat ~/DO288/labs/build-app/oc-new-app.sh
+
+oc new-app --name simple \
+ --build-env npm_config_registry=\
+http://invalid-server:8081/nexus/content/groups/nodejs \
+ http://services.lab.example.com/build-app
+
+ oc set env bc simple \
+ npm_config_registry=\
+http://services.lab.example.com:8081/nexus/content/groups/nodejs
+oc set env bc simple --list
+oc start-build simple -F
+ oc describe bc simple
+-> Webhook Generic
+ curl -X POST -k \
+ https://master.lab.example.com:443/oapi/v1/namespaces/build-app/
+buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
+
+ 
+#exes-
+[build-app]
+
+[probes]
+
+[probes]
+
+
