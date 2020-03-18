@@ -55,3 +55,9 @@ oc create configmap appconfig --from-literal APP_MSG='D288 HELL'
 oc set env dc/hello --from cm/appconfig
 [hello-swarm]
 
+#chapter4
+[java-serverhost]   manage-builds 
+cd java-serverhost
+oc new-project chapter4-java-serverhost-manage-builds 
+oc new-app --name jhost  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
+[java-serverhost]  
