@@ -72,3 +72,6 @@ oc new-app -S jee
 docker pull  registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14
 cd ~/docker-images
 docker save registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14  -o  php-70-rhel7-newer.tar.gz
+
+vi /etc/hosts
+192.x.x.13 docker-registry-default.apps.os311.test.it.example.com
