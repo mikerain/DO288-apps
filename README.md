@@ -128,8 +128,24 @@ buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
 #exes-
 [build-app]
 
-[probes]
+
+#chapter4
 
 [probes]
 
+oc new-project probes
 
+oc new-app --name probes    --build-env npm_config_registry=https://registry.npm.taobao.org https://github.com/woyaowoyao/DO288-apps.git --context-dir=/probes
+
+http://probes-probes.apps.os311.test.it.example.com/flip?op=kill
+change to unhealthy
+
+[probes]
+
+[strategy]
+oc new-project strategy
+
+ oc new-app --name mysql  -e MYSQL_USER=test -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=testdb  --docker-image docker.io/centos/mysql-57-centos7  --insecure-registry
+
+
+[strategy]
