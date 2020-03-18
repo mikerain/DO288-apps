@@ -68,10 +68,17 @@ oc new-app --name jhost -i  wildfly:9.0  https://github.com/woyaowoyao/DO288-app
 oc new-app -S jee
 [java-serverhost]  
 
-[trigger-builds ]
+[trigger-builds]
 docker pull  registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14
 cd ~/docker-images
 docker save registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14  -o  php-70-rhel7-newer.tar.gz
 
+sh push-image.sh
 vi /etc/hosts
 192.x.x.13 docker-registry-default.apps.os311.test.it.example.com
+
+ oc new-project trigger-builds
+ oc new-app --name trigger  php~https://github.com/woyaowoyao/DO288-apps.git --context-dir=trigger-builds
+
+ oc expose svc/trigger
+
