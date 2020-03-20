@@ -107,7 +107,11 @@ docker rmi -f $(docker images -aq)
 
  oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/hello-world-nginx --insecure 
  
-  grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
+grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
+sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
+
+sudo systemctl restart docker 
+sudo systemctl status docker 
 #[importance]
 
 
