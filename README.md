@@ -58,6 +58,55 @@ oc create configmap appconfig --from-literal APP_MSG='D288 HELL'
 oc set env dc/hello --from cm/appconfig
 [hello-swarm]
 
+#chapter3
+
+ sudo yum install docker-distribution skopeo 
+  cat ~/DO288/labs/external-registry/config-firewall.sh 
+/etc/docker-distribution/registry/config.yml 
+
+ sudo systemctl start docker-distribution 
+ sudo systemctl enable docker-distribution 
+ sudo systemctl status docker-distribution 
+ 
+ ~/DO288/labs/external-registry/push-image.sh 
+ 
+ cat /etc/docker-distribution/registry/config.yml     | grep rootdirectory 
+ 
+  find /var/lib/registry/ -name rhel7-sleep 
+  
+  sudo systemctl status docker 
+  
+  
+  oc new-app --name sleep \    --docker-image workstation.lab.example.com:5000/rhel7-sleep 
+  
+As root user, open the /etc/sysconfig/docker
+ file with a text editor and locate the following line:
+INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000'
+INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000 --insecureregistry workstation.lab.example.com:5000'
+
+sudo systemctl restart docker
+sudo systemctl status docker 
+
+ docker run -d --name test \    workstation.lab.example.com:5000/rhel7-sleep 
+ 
+#[importance]
+system:registry 
+This role allows a user to pull images from the internal registry.
+system:image-builder 
+This role allows a user to push images to the internal registry.
+
+oc adm policy add-role-to-user system:registry user_name 
+oc adm policy add-role-to-user system:image-builder user_name
+export TOKEN=$(oc whoami -t)
+docker login -u myuser -p $TOKEN myregistry.example.com
+
+oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
+
+docker rm $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+#[importance]
+
+
 #chapter4
 [java-serverhost]   manage-builds 
 cd java-serverhost
