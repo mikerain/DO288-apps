@@ -155,7 +155,21 @@ work well
 oc new-project post-commit
 oc new-app --name builds-for-managers https://github.com/woyaowoyao/DO288-apps.git --context-dir=builds-for-managers
 
-oc new-app --name post-commit https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
+oc new-app --name hook  https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
+
+oc set build-hook bc/hook --post-commit --command -- \
+    bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\
+	${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
+	
+oc start-build bc/hook -F 
+
+oc set env bc/hook DEVELOPER="Your Name
+ oc set env bc/hook --list 
+ 
+ 
+ $ oc describe bc simple 
+ 
+  curl -X POST -k \    https://master.lab.example.com:443/oapi/v1/namespaces/build-app/ buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic 
 [post-commit]
 
 [build-app]
