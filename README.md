@@ -104,6 +104,10 @@ oc policy add-role-to-group -n img_project system:image-puller \    system:servi
 
 docker rm $(docker ps -aq)
 docker rmi -f $(docker images -aq)
+
+ oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/hello-world-nginx --insecure 
+ 
+  grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 #[importance]
 
 
