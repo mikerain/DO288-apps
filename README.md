@@ -9,7 +9,10 @@ oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
 #chapter1
 
-[app-config]
+[source-build]
+new-app --name hello --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs http://services.lab.example.com/nodejs-helloworld 
+new-app --name hello  https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
+[source-build]
 
 #chapter2
 
