@@ -244,28 +244,38 @@ run-httpd -e debug $@
   
   
  [s2i build]
+ 
+s2i create image_name director
+ 
+docker build -t builder_image .
+
+s2i build src builder_image tag_name
+
+
   s2i build test/test-app s2i-do288-nginx nginx-test
   
   docker tag s2i-do288-nginx         myregistry.example.com:5000/s2i-do288-nginx
-  
+  docker tag s2i-do288-nginx         myregistry.example.com:5000/s2i-do288-nginx
   docker push myregistry.example.com:5000/s2i-do288-nginx
 
   oc import-image s2i-do288-nginx     --from myregistry.example.com:5000/s2i-do288-nginx     --confirm --insecure=true
 
-  oc new-app --name nginx-test \    s2i-do288-nginx~git_repository
+  oc new-app --name nginx-test    s2i-do288-nginx~git_repository
 
  [s2i build]
  
- [s2i-do288-httpd]
+ [s2i-do288-httpd]-apache-s2i
  
  s2i create s2i-do288-httpd s2i-do288-httpd
  
+  s2i build test/test-app/ \    s2i-do288-httpd s2i-sample-app 
+  
  [s2i-do288-httpd]
  
  curl -s https://api.github.com/repos/openshift/source-to-image/releases/latest | grep browser_download_url 　| grep linux-amd64 　| cut -d '"' -f 4 | wget -qi -
  curl -s  https://github-production-release-asset-2e65be.s3.amazonaws.com/16323162/6826d880-f1bd-11e9-8535-6d823d5af0bd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20200321%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200321T031222Z&X-Amz-Expires=300&X-Amz-Signature=9dd0e334ad0cbc4664d863900b075df1835fc9ff4389c04136da299006498a74&X-Amz-SignedHeaders=host&actor_id=9347028&response-content-disposition=attachment%3B%20filename%3Dsource-to-image-v1.2.0-2a579ecd-linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
 tree -a 
-　
+　 docker run --name test -u 1234    -p 8080:8080 -d s2i-sample-app 
 #chapter5
 [probes]
 
