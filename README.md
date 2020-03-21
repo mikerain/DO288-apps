@@ -205,6 +205,68 @@ buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
 
 #chapter4
 
+#chapter5
+
+#考试
+
+[s2i-scripts]@@@@
+docker run --name test -it registry.access.redhat.com/rhscl/httpd-24-rhel7 bash
+cat /usr/libexec/s2i/assemble 
+cat /usr/libexec/s2i/run 
+cat /usr/libexec/s2i/usage 
+
+ git clone    http://services.lab.example.com/s2i-scripts
+
+vi assemble
+@@@@考试
+######## CUSTOMIZATION START HERE ############
+echo "---> Installing application source"
+cp -Rf /tmp/src/*.html ./
+
+DATE=`date "+%b %d, %Y @ %H:%M %p"`
+
+echo "---> Creating info page"
+echo "Page built on $DATE" >> ./info.html
+echo "Proudly served by Apache HTTP Server version $HTTPD_VERSION" >> ./info.html
+
+
+$ oc expose svc hello --port 8080     --hostname hello.apps.lab.example.com 
+######## CUSTOMIZATION ENDS HERE ############
+
+run-httpd -e debug $@
+
+[s2i-scripts]@@@@
+
+
+ skopeo delete --tls-verify=false \    docker://registry.lab.example.com:5000/s2i-do288-httpd
+ 
+  oc describe dc/mysql | grep -A 3 'Strategy:' 
+  
+  
+ [s2i build]
+  s2i build test/test-app s2i-do288-nginx nginx-test
+  
+  docker tag s2i-do288-nginx         myregistry.example.com:5000/s2i-do288-nginx
+  
+  docker push myregistry.example.com:5000/s2i-do288-nginx
+
+  oc import-image s2i-do288-nginx     --from myregistry.example.com:5000/s2i-do288-nginx     --confirm --insecure=true
+
+  oc new-app --name nginx-test \    s2i-do288-nginx~git_repository
+
+ [s2i build]
+ 
+ [s2i-do288-httpd]
+ 
+ s2i create s2i-do288-httpd s2i-do288-httpd
+ 
+ [s2i-do288-httpd]
+ 
+ curl -s https://api.github.com/repos/openshift/source-to-image/releases/latest | grep browser_download_url 　| grep linux-amd64 　| cut -d '"' -f 4 | wget -qi -
+ curl -s  https://github-production-release-asset-2e65be.s3.amazonaws.com/16323162/6826d880-f1bd-11e9-8535-6d823d5af0bd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20200321%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200321T031222Z&X-Amz-Expires=300&X-Amz-Signature=9dd0e334ad0cbc4664d863900b075df1835fc9ff4389c04136da299006498a74&X-Amz-SignedHeaders=host&actor_id=9347028&response-content-disposition=attachment%3B%20filename%3Dsource-to-image-v1.2.0-2a579ecd-linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+tree -a 
+　
+#chapter5
 [probes]
 
 oc new-project probes
@@ -232,7 +294,8 @@ oc describe dc/mysql | grep 'Strategy:'
  oc patch dc/mysql --type=json    -p='[{"op":"remove", "path": "/spec/strategy/rollingParams"}]' 
 
 [strategy]
-
+ oc get events | grep failed 
+ 
 [camel-hello]
 oc new-app --name camelHelloApp  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/camel-hello
 [camel-hello]
