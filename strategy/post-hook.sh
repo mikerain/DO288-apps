@@ -1,0 +1,1 @@
+oc patch dc/mysql --patch \ '{"spec":{"strategy":{"recreateParams":{"post":{"failurePolicy": "Abort","execNewPod":{"containerName":"mysql","command":["/bin/sh","-c","curl -s http://content.example.com/ocp3.6/x86_64/installers/import.sh -o /tmp/ import.sh&&chmod 755 /tmp/import.sh&&/tmp/import.sh"]}}}}}}

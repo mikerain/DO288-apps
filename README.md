@@ -265,7 +265,7 @@ s2i build src builder_image tag_name
  [s2i build]
  
  [s2i-do288-httpd]-apache-s2i
- 
+ docker build -t s2i-do288-httpd . 
  s2i create s2i-do288-httpd s2i-do288-httpd
  
   s2i build test/test-app/ \    s2i-do288-httpd s2i-sample-app 
