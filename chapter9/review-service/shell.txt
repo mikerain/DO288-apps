@@ -1,0 +1,61 @@
+
+
+
+cat new-app-db.sh 
+#!/bin/bash
+
+oc new-app --name tododb \
+    --docker-image registry.lab.example.com:5000/rhscl/mysql-57-rhel7 \
+    --insecure-registry \
+    -e MYSQL_USER=todoapp \
+    -e MYSQL_PASSWORD=mypass \
+    -e MYSQL_DATABASE=todo
+    
+
+ cat new-app-node.sh 
+#!/bin/bash
+
+oc new-app --name backend \
+    --build-env npm_config_registry=\
+http://services.lab.example.com:8081/nexus/content/groups/nodejs \
+    -e DATABASE_NAME=todo \
+    -e DATABASE_USER=todoapp \
+    -e DATABASE_PASSWORD=mypass \
+    -e DATABASE_SVC=tododb \
+    http://services.lab.example.com/todo-backend
+	
+# app-use-secret.sh
+#!/bin/bash
+
+oc set env dc/backend \
+    --prefix=DATABASE_ \
+    --from=secret/tododb
+	
+cat db-use-secret.sh 
+#!/bin/bash
+
+cat find-s2i-scripts.sh 
+#!/bin/sh
+
+skopeo inspect --tls-verify=false \
+    docker://registry.lab.example.com:5000/rhscl/nodejs-6-rhel7 \
+     | grep s2i
+
+
+
+oc set env dc/tododb \
+    --prefix=MYSQL_ \
+    --from=secret/tododb
+	
+	cat create-cm.sh
+#!/bin/sh
+
+oc create cm todoapp \
+    --from-literal init=true
+
+cat create-secret.sh 
+#!/bin/bash
+
+oc create secret generic tododb \
+    --from-literal user=todoapp \
+    --from-literal password=mypass
