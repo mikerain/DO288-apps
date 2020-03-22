@@ -1,0 +1,13 @@
+cat add-route.sh 
+#!/bin/bash
+
+oc expose svc/quotesapi \
+    --hostname quotes.apps.lab.example.com
+
+
+cat add-vol.sh 
+#!/bin/bash
+
+oc set volume dc/quotesdb --add --overwrite \
+    --name quotesdb-volume-1 -t pvc --claim-name quotesdb-claim \
+    --claim-size 300Mi --claim-mode ReadWriteMany 

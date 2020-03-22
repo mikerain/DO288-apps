@@ -286,7 +286,7 @@ tree -a
   grep kind: test-template.yaml
   
    diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clean.yaml \
-   
+   l
  #chapter7
  
 [probes]

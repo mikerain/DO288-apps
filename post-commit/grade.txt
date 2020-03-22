@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-post-commit - grading script for DO288 ch04s08 ge
+#
+# SYNOPSIS
+#     lab-post-commit {setup|cleanup}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Wed Nov 08 2017 Douglas Silva <dsilva@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='post-commit'
+title='GE: Implementing Post-Commit Build Hooks'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files 'no-solution'
+
+  ocp_print_prereq_header
+
+  ocp_admin_login_on_master
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists "${this}"
+  ocp_check_image_exists 'rhscl/php-70-rhel7' 'do288/build-for-managers'
+  ocp_exit_on_failure
+
+  print_line ' Prepare the Guided Exercise'
+  ocp_login_developer
+
+  pad ' ?Create the post-commit project'
+  oc new-project ${this}
+  print_SUCCESS
+
+  pad ' . Deploy and configure the builds-for-managers application'
+  oc new-app --insecure-registry=true  --name builds-for-managers --docker-image=registry.lab.example.com:5000/do288/build-for-managers
+  oc expose svc builds-for-managers --hostname=builds-for-managers.apps.lab.example.com
+  print_SUCCESS
+  
+  pad ' . Log in to OpenShift as the developer user'
+  if su - student -c 'oc login -u developer -p redhat --insecure-skip-tls-verify https://master.lab.example.com'
+  then
+    print_SUCCESS
+  else
+    print_line
+    pad 'Failed to login as the developer user'
+    print_FAIL
+  fi
+  pad ' . Change to post-commit project'
+  su - student -c 'oc project post-commit'
+  print_SUCCESS
+
+  ocp_print_setup_footer
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 'no-solution'
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+
+  ocp_print_cleanup_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"
