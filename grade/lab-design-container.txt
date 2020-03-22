@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-design-container - grading script for DO288 ch02s09 lab
+#
+# SYNOPSIS
+#     lab-design-container {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grade the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Oct 15 2017 Ravi Srinivasan <rsriniva@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='design-container'
+title='Lab: Designing Containerized Applications for OpenShift'
+
+# App JAR location
+app_jar_url='http://content.example.com/ocp3.6/x86_64/installers/hello-swarm.jar'
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'hello-swarm'
+  ocp_check_image_exists 'rhel7'
+  pad ' Check if the application JAR is available '
+  ocp_check_http_status "${app_jar_url}" '200 OK'
+
+  ocp_print_setup_footer
+
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files
+
+  ocp_delete_project "${this}"
+
+  ocp_print_cleanup_footer
+}
+
+
+function lab_grade {
+
+  ocp_print_grade_header
+
+  ocp_login_developer
+
+  pad " ?Project 'design-container' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local app='hello'
+
+  pad " ?Build config '${app}' points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" 'http://services.lab.example.com/hello-swarm'
+
+  pad " ?Latest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${app}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Pod '${app}' is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  pad " ?Pod '${app}' logs shows application is started"
+  ocp_pass_if_pod_logs_match "${pod}" 'WildFly Swarm is Ready'
+  
+  local key='APP_MSG'
+  local elvis_msg='Elvis has left the building'
+  print_line " ?Config map 'appconfig' defines the '${key}' key"
+  pad "   with value '${elvis_msg}'"
+  ocp_pass_if_configmap_matches_key_value 'appconfig' "${key}" "${elvis_msg}"
+
+  local hostname='hello.apps.lab.example.com'
+
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local hello_msg='Hello world'
+  pad " ?Application '${app}' returns the '${hello_msg}' message"
+  ocp_pass_if_url_matches "http://${hostname}/api/hello" "${hello_msg}"
+
+  print_line " ?Application '${app}' returns the"
+  pad "   '${elvis_msg}' message"
+  ocp_pass_if_url_matches "http://${hostname}/api/hello" "${elvis_msg}"
+
+  ocp_print_grade_footer
+}
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

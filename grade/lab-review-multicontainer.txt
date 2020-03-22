@@ -1,0 +1,224 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-review-multicontainer - grading script for DO288 ch10s04 lab
+#
+# SYNOPSIS
+#     lab-review-multicontainer {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grande the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Dec 27 2017 Fernando Lozano <flozano@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='review-multicontainer'
+title='Lab: Building and Deploying a Multi-container Application'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_admin_login_on_master
+  ocp_check_openshift_up
+  ocp_success_if_project_exists 'review-common' 'review-dockerfile'
+  ocp_check_git_repo_exists 'todo-backend'
+  ocp_check_image_exists 'todo-frontend' 'rhscl/nodejs-6-rhel7' 'rhscl/mysql-57-rhel7'
+  ocp_check_nexus_npm 'restify' 'sequelize' 'mysql'
+
+  ocp_print_setup_footer
+}
+
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+  print_line 'You can safely ignore errors from the followint tasks:'
+  pad " ?Delete 'todoapp' template from 'review-common'"
+  if ssh root@master oc delete template todoapp -n review-common
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+  
+  ocp_print_cleanup_footer
+}
+
+
+function lab_grade {
+
+  ocp_print_grade_header
+  ocp_admin_login_on_master
+  ocp_login_developer 
+  
+  print_line ' Checking the todoapp template'
+
+  local common_prj='review-common'
+  pad " ?Project '${common_prj}' exists"
+  ocp_pass_if_project_exists "${common_prj}"
+  ocp_exit_on_failure
+
+  local template='todoapp'
+  pad " ?Template resource '${template}' exists"
+  if oc get template "${template}" --no-headers
+  then
+    print_PASS
+  else
+    print_FAIL
+  fi
+
+  pad " ?Template defines seven parameters"
+  local nparam=$(oc process --parameters todoapp | wc -l)
+  ocp_pass_if_equals "${nparam}" '8'
+  
+  local param='SECRET'
+  pad " ?Parameter ${param} is randomly generated"
+  local secret=$(oc process --parameters todoapp | grep "${param}" | grep 'expression' | wc -l)
+  ocp_pass_if_equals "${secret}" '1'
+  
+  local param='CLEAN_DATABASE'
+  pad " ?Parameter ${param} has default value of 'false'"
+  local secret=$(oc process --parameters todoapp | grep "${param}" | grep 'false' | wc -l)
+  ocp_pass_if_equals "${secret}" '1'
+  
+  pad " ?ConfigMap key references the 'CLEAN_DATABASE' parameter"
+  local value=$(oc get template todoapp -o jsonpath='{.objects[?(@.kind=="ConfigMap")].data.init}')
+  ocp_pass_if_equals "${value}" '${CLEAN_DATABASE}'
+
+  pad " ?Secret key references the 'PASSWORD' parameter"
+  local value=$(oc get template todoapp -o jsonpath='{.objects[?(@.kind=="Secret")].stringData.password}')
+  ocp_pass_if_equals "${value}" '${PASSWORD}'
+
+  local app='frontend'
+  local param='HOSTNAME'
+  pad " ?Front-end route references the 'HOSTNAME' parameter"
+  local value=$(oc get template todoapp -o jsonpath='{range .objects[?(@.kind=="Route")]}{.metadata.name}{" "}{.spec.host}{"\n"}' | grep "${app}")
+
+  ocp_pass_if_equals "${value}" "${app} \${${param}}"
+
+  local app='backend'
+  local path='/todo/api/items-count'
+  print_line " ?Template defines a liveness probe that points to"
+  pad "   ${path}"
+  local value=$(oc get template todoapp -o jsonpath='{range .objects[?(@.kind=="DeploymentConfig")]}{.metadata.name}{" "}{.spec.template.spec.containers[0].livenessProbe.httpGet.path}{"\n"}' | grep "${app}")
+  ocp_pass_if_equals "${value}" "${app} ${path}"
+
+  local path='/todo/api/host'
+  print_line " ?Template defines a readiness probe that points to"
+  pad "   ${path}"
+  local value=$(oc get template todoapp -o jsonpath='{range .objects[?(@.kind=="DeploymentConfig")]}{.metadata.name}{" "}{.spec.template.spec.containers[0].readinessProbe.httpGet.path}{"\n"}' | grep "${app}")
+  ocp_pass_if_equals "${value}" "${app} ${path}"
+
+  local host='todoapp.apps.lab.example.com'
+  pad " ?Template points to the hard-coded URL of the back-end"
+  local value=$(oc get template todoapp -o jsonpath='{range .objects[?(@.kind=="Route")]}{.metadata.name}{" "}{.spec.host}{"\n"}' | grep "${app}")
+  ocp_pass_if_equals "${value}" "${app} ${host}"
+
+  print_line
+  print_line ' Checking the database deployment'
+
+  pad " ?Project '${this}' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local app='tododb'  
+  local imageurl='registry.lab.example.com:5000/rhscl/mysql-57-rhel7'
+
+  pad " ?Database deployment points to the MySQL server image"
+  ocp_pass_if_dc_points_to_image "${app}" "${imageurl}"
+  
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Database pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  print_line
+  print_line ' Checking the front-end application deployment'
+
+  local app='frontend'  
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Front-end pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  local hostname='todoui.apps.lab.example.com'
+  
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local url="http://${hostname}/index.html"
+  
+  pad " ?Front-end welcome page is available"
+  ocp_pass_if_http_status "${url}" '200 OK'
+
+  local title='<h1>To Do List Application</h1>'
+  pad " ?Front-end welcome page returns the expected title"
+  ocp_pass_if_url_matches "${url}" "${title}"
+
+  print_line
+  print_line ' Checking the back-end application deployment'
+
+  local app='backend'  
+  local gitrepo='http://services.lab.example.com/todo-backend'
+
+  pad " ?Application bc points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" "${gitrepo}"
+  
+  pad " ?Application build was successful"
+  ocp_pass_if_last_build_complete "${app}"
+  
+  pad " ?Application pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  local hostname='todoapp.apps.lab.example.com'
+  
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local url="http://${hostname}/todo/api/items-count"
+  
+  local count='{"count":6}'
+  pad " ?Back-end HTTP API returns six items"
+  ocp_pass_if_url_matches "${url}" "${count}"
+
+  ocp_print_grade_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

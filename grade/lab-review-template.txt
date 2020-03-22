@@ -1,0 +1,153 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-review-template - grading script for DO288 ch06s05 lab
+#
+# SYNOPSIS
+#     lab-review-template {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grande the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Nov 30 2017 Fernando Lozano <flozano@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='review-template'
+title='Lab: Creating Applications from OpenShift Templates'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_admin_login_on_master
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'todo-single'
+  ocp_check_image_exists 'rhscl/nodejs-6-rhel7' 'rhscl/mysql-57-rhel7'
+  ocp_check_nexus_npm 'restify' 'sequelize' 'mysql'
+
+  ocp_print_setup_footer
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+  
+  ocp_print_cleanup_footer
+}
+
+
+function lab_grade {
+
+  ocp_print_grade_header
+
+  ocp_login_developer
+  ocp_admin_login_on_master
+  
+  local template='/home/student/todo-template.yaml'
+  
+  print_line ' Checking edits to the template file'
+  pad " ?Template file '${this}' exists"
+  if [ -r "${template}" ]
+  then
+    print_PASS
+
+    local process_template="oc process --parameters -f ${template}"
+  
+    pad " ?Template file defines five parameters"
+    local param_count=$(${process_template} | wc -l)
+    ocp_pass_if_equals "${param_count}" "6"  
+
+    pad " ?Parameter PASSWORD was defined"
+    local param_count=$(${process_template} | grep '^PASSWORD' | wc -l)
+    ocp_pass_if_equals "${param_count}" "1"  
+
+    pad " ?Parameter CLEAN_DATABASE was defined"
+    local param_count=$(${process_template} | grep '^CLEAN_DATABASE' | wc -l)
+    ocp_pass_if_equals "${param_count}" "1"  
+
+    pad " ?Template references PASSWORD parameter twice"
+    local ref_count=$(grep '${PASSWORD}' "${template}" | wc -l)
+    ocp_pass_if_equals "${ref_count}" "2"  
+
+    pad " ?Template references HOSTNAME parameter once"
+    local ref_count=$(grep '${HOSTNAME}' "${template}" | wc -l)
+    ocp_pass_if_equals "${ref_count}" "1"  
+
+  else
+      print_FAILURE
+  fi
+  
+  print_line
+  print_line ' Checking deployed todo application'
+  pad " ?Project '${this}' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local app='tododb'  
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Database pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  local app='todoapp'
+  
+  pad " ?Build config '${app}' points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" 'http://services.lab.example.com/todo-single'
+
+  pad " ?Lastest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${app}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Application pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  local hostname='todo.apps.lab.example.com'
+  
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  pad " ?Application API can connect to the database"
+  ocp_pass_if_http_status "http://${hostname}"/todo/api/items-count '200 OK'
+
+  print_line
+  ocp_print_grade_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

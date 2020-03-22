@@ -1,0 +1,113 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-source-build - grading script for DO288 ch01s07 lab
+#
+# SYNOPSIS
+#     lab-docker-build {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grande the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Oct 05 2017 Fernando Lozano <flozano@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='source-build'
+title='Lab: Deploying and Managing Applications on an OpenShift Cluster'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'nodejs-helloworld'
+  ocp_check_image_exists 'rhscl/nodejs-6-rhel7'
+  ocp_check_nexus_npm 'express'
+
+  ocp_print_setup_footer
+
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+
+  ocp_print_cleanup_footer
+}
+
+
+function lab_grade {
+
+  ocp_print_grade_header
+
+  ocp_login_developer
+  
+  pad " ?Project 'source-build' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local app='hello'
+  
+  pad " ?Build config '${app}' points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" 'http://services.lab.example.com/nodejs-helloworld'
+  
+  pad " ?Lastest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${app}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Pod '${app}' is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  pad " ?Pod '${app}' logs shows application is started"
+  ocp_pass_if_pod_logs_match "${pod}" 'listening on port 8080'
+
+  local hostname='hello.apps.lab.example.com'
+  
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local msg='Hello World'
+  pad " ?Application '${app}' returns the '${msg}' message"
+  ocp_pass_if_url_matches "http://${hostname}" "${msg}" 
+
+  ocp_print_grade_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

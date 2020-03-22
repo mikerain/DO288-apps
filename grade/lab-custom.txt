@@ -1,0 +1,149 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-custom-s2i - grading script for DO288 GE ch05s05
+#
+# SYNOPSIS
+#     lab-custom-s2i {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup or
+#     cleanup for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Nov 8 2017 Ravi Srinivasan <rsriniva@redhat.com>
+#   - initial script
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='custom-s2i'
+title='Lab: Customizing Source to Image Builds'
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+function lab_setup {
+
+  ocp_print_prereq_header
+  ocp_grab_lab_files
+  ocp_check_openshift_up
+  print_line ' Checking workstation VM:'
+  ocp_check_docker_up
+  ocp_check_git_repo_exists 'go-hello'
+  ocp_success_if_package_in_yum_repo 'source-to-image'
+  ocp_install_package 'skopeo' 'source-to-image'
+  ocp_check_image_exists 'rhel7'
+
+  ocp_print_setup_footer
+
+}
+
+function lab_grade {
+
+  ocp_print_grade_header
+
+  ocp_login_developer
+
+  pad " ?Project '${this}' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local image='s2i-do288-go'
+  
+  pad " ?Image '${image}' exists in private registry"
+  ocp_pass_if_image_exists "${image}"
+
+  local imageurl="docker-registry.default.svc:5000/custom-s2i/${image}"
+
+  pad " ?Image stream '${image}' points to the correct image"
+  ocp_pass_if_is_points_to_image "${image}" "${imageurl}"
+
+  local app='greet'
+
+  pad " ?Build config '${app}' points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" 'http://services.lab.example.com/go-hello'
+
+  pad " ?Latest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${app}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Pod '${app}' is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  pad " ?Pod '${app}' logs shows application is started"
+  ocp_pass_if_pod_logs_match "${pod}" 'Starting server on port 8080'
+
+  local hostname='greet.apps.lab.example.com'
+
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local hello_msg='Hola user1'
+  pad " ?Application '${app}' returns the '${hello_msg}' message"
+  ocp_pass_if_url_matches "http://${hostname}/user1" "${hello_msg}"
+
+  ocp_print_grade_footer
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files
+
+  ocp_delete_project "${this}"
+  local container='go-test'
+
+  print_line 'You can safely ignore failures from the next tasks:'
+  pad " ?Stop and remove the ${container} container"
+  docker stop "${container}"
+  if docker rm "${container}"
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+  sleep 6
+
+  pad " ?Remove all container images from workstation"
+  if  docker rmi -f $(docker images -aq)
+  then
+      print_SUCCESS
+  else
+      print_FAIL
+  fi
+
+  local builder='s2i-do288-go'
+  local registry='registry.lab.example.com:5000'
+
+  pad " ?Remove the ${builder} image from the classroom registry"
+
+  if skopeo delete --tls-verify=false docker://${registry}/${builder}
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  ocp_print_cleanup_footer
+}
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

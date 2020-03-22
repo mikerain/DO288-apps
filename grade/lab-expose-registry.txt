@@ -1,0 +1,113 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-expose-registry - grading script for DO288 ch03s04 ge
+#
+# SYNOPSIS
+#     lab-expose-registry {setup|cleanup}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Nov 01 2017 Fernando Lozano <flozano@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='expose-registry'
+title='GE: Allowing Access to the OpenShift Registry'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+  
+  ocp_check_openshift_up
+  
+  print_line ' Checking workstation VM:'
+  ocp_check_docker_up
+  
+  local image_name="rhel7-info"
+  local image_url="${contents}/ocp3.6/x86_64/installers/${image_name}-oci.tar.gz"
+
+  print_line ' Checking custom container images:'
+    
+  pad " ?OCI container image '${image_name}' is available"
+  ocp_check_http_status "${image_url}" '200 OK'
+  
+  pad " ?Download OCI container image folder '${image_name}'"
+  ocp_download_extract "${image_name}-oci.tar.gz" "installers"
+
+  ocp_install_package 'skopeo'
+    
+  ocp_print_setup_footer
+
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project 'common'
+  
+  pad ' ?Deny cluster-wide permissions to the registry'
+  ssh root@master oadm policy remove-role-from-user system:registry developer
+  ssh root@master oadm policy remove-role-from-user system:image-builder developer
+  print_SUCCESS
+
+  local container='test'
+  local image='rhel7-info'
+
+  print_line 'You can safely ignore failures from the next tasks:'
+  pad " ?Stop and remove the ${container} container"
+  docker stop "${container}"
+  if docker rm "${container}"
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+  sleep 6
+  
+  pad " ?Remove the ${image} container image"
+  if docker rmi -f "${image}"
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+  
+  ocp_print_cleanup_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

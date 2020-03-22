@@ -1,0 +1,159 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-todo-swarm - grading script for DO288 ch09s07 lab
+#
+# SYNOPSIS
+#     lab-todo-swarm {setup|cleanup|grade}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grande the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Wed Jan 3 2018 Douglas Silva <dsilva@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='todo-swarm'
+title='Lab: Migrating Applications to OpenShift'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'todo-api-swarm'
+  ocp_check_image_exists 'redhat-openjdk-18/openjdk18-openshift'
+
+  print_line " Preparing local workstation"
+  pad " . Download maven dependencies to speed up the build"
+  pushd /home/student/
+  rm -rf .m2
+  curl -O http://content.example.com/ocp3.6/x86_64/installers/ch09-repo.tar.gz
+  tar -xzvf ch09-repo.tar.gz 
+  rm -rf ch09-repo.tar.gz
+  chown -R student:student .m2
+  popd
+  
+  if [ -d '/home/student/.m2/repository/io/fabric8/fabric8-maven-plugin/3.1.80.redhat-000019' ]; then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  print_line ' Preparing the To Do List database and application'
+
+  pad ' ?A MariaDB database is running on the services VM'
+  if ssh root@services mysqlshow
+  then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  pad ' ?Initialize the todo database on services VM'
+  ocp_success_if_script "${labs}/${this}/populate-db.sh"
+
+  ocp_print_setup_footer
+
+}
+
+function lab_grade {
+  ocp_print_grade_header
+  ocp_admin_login_on_master
+  ocp_login_developer
+
+  print_line ' Checking deployed todo application'
+  pad " ?Project '${this}' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+  
+  local app='todo-api'
+
+  pad " . Build is using a Binary input source"
+  local bc="${app}-s2i"
+  local _type="Binary"
+
+  local uri=$(oc get bc "${bc}" -o jsonpath='{.spec.source.type}')
+  if [ "${uri}" = "${_type}" ]
+  then
+    print_PASS
+  else
+    print_FAIL
+    print_line "Build config does not use a Binary input source"
+  fi
+
+  pad " ?Lastest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${bc}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Application pod is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  local hostname='api.apps.lab.example.com'
+
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  pad " ?Application API can connect to the database"
+  ocp_pass_if_http_status "http://${hostname}"/todo/api/items '200 OK'
+
+  print_line
+  
+  ocp_print_grade_footer
+
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+
+  if [ -r "${labs}/${this}/clean-db.sh" ]
+  then
+    pad ' ?Drop the todo database from services VM'
+    ocp_success_if_script "${labs}/${this}/clean-db.sh"
+  else
+    print_line 'Cannot find clean-db.sh script. Did you run setup before cleanup?'
+    return
+  fi
+
+  ocp_cleanup_lab_files 'no_solution'
+  
+
+  ocp_print_cleanup_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

@@ -1,0 +1,117 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-create - grading script for DO288 ch06s04 ge
+#
+# SYNOPSIS
+#     lab-create-template {setup|cleanup}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Nov 23 2017 Fernando Lozano <flozano@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='create-template'
+title='GE: Creating a Multi-container Template'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_admin_login_on_master
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'quotes'
+  ocp_check_image_exists 'rhscl/php-70-rhel7' 'rhscl/mysql-57-rhel7'
+
+  ocp_login_developer
+  print_line ' Creating the starter project:'
+  pad ' ?Create the quotes-dev project'
+  if oc new-project quotes-dev
+  then
+    print_SUCCESS
+
+    oc login -u admin -p redhat
+    ocp_create_share "${this}" vol0{1,2}
+    ocp_create_pv '300Mi' vol0{1,2}
+
+    pad ' ?Deploy the database'
+    ocp_success_if_script "${labs}/${this}/new-app-db.sh"
+    sleep 3
+    pad ' ?Add a volume to the database'
+    ocp_success_if_script "${labs}/${this}/add-vol.sh"
+    sleep 3
+    pad ' ?Deploy the application'
+    ocp_success_if_script "${labs}/${this}/new-app-php.sh"  
+    pad ' ?Expose the application'
+    ocp_success_if_script "${labs}/${this}/add-route.sh"
+  
+  else
+    print_FAIL
+  fi
+  
+  su - student -c 'oc login -u developer -p redhat'
+  su - student -c 'oc project quotes-dev'
+  
+  ocp_print_setup_footer
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 
+
+  print_line
+  print_line 'You can safely ignore failures from the next tasks:'
+  print_line
+  
+  #XXX db pods are forever Terminating (oc get pod --all-namespaces) and projects too
+  #XXX can't explain the reason, added these sleeps as a workaround attempt.
+  #XXX only reliable fix I found was restart the OpenShift cluster VMs.
+   
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project 'myquotes'
+  sleep 5
+  ocp_delete_project 'quotes-dev'
+  sleep 5
+
+  oc login -u admin -p redhat
+  ocp_delete_pv vol0{1,2}
+  sleep 5
+  ocp_delete_share "${this}" vol0{1,2}
+  
+  ocp_print_cleanup_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

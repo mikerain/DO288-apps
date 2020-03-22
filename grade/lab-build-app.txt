@@ -1,0 +1,139 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-build-app - grading script for DO288 ch04s04 ge
+#
+# SYNOPSIS
+#     lab-build-app {setup|cleanup}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#        grade   - grande the work done by the student
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Thu Nov 16 2017 Douglas Silva <dsilva@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='build-app'
+title='GE: Building applications'
+
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup grade)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files 'no-solution'
+
+  ocp_print_prereq_header
+
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'build-app'
+  ocp_check_image_exists 'rhscl/nodejs-6-rhel7'
+  ocp_check_nexus_npm 'express'
+
+  ocp_print_setup_footer
+
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 'no-solution'
+
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project "${this}"
+  ocp_delete_project 'common'
+
+  ocp_print_cleanup_footer
+}
+
+function lab_grade {
+
+  ocp_print_grade_header
+
+  ocp_login_developer
+
+  pad " ?Project 'build-app' exists"
+  ocp_pass_if_project_exists "${this}"
+  ocp_exit_on_failure
+
+  local app='simple'
+
+  pad " ?Build config '${app}' points to correct git repo"
+  ocp_pass_if_bc_points_to_git_repo "${app}" 'http://services.lab.example.com/build-app'
+ 
+  pad " ?Lastest '${app}' build is successful"
+  ocp_pass_if_last_build_complete "${app}"
+
+  local pod=$(ocp_pod_from_dc "${app}")
+
+  pad " ?Pod '${app}' is ready and runnning"
+  ocp_pass_if_pod_is_ready_and_running "${pod}"
+
+  pad " ?Pod '${app}' logs shows application is started"
+  ocp_pass_if_pod_logs_match "${pod}" 'Simple app for the Building Applications Lab!'
+
+  local hostname='simple.apps.lab.example.com'
+
+  pad " ?Route '${app}' points to the correct hostname"
+  ocp_pass_if_route_hostname "${app}" "${hostname}"
+
+  local msg='Simple app for the Building Applications Lab!'
+  print_line " ?Application '${app}' returns the"
+  pad "   '${msg}' message"
+  ocp_pass_if_url_matches "http://${hostname}" "${msg}"
+
+
+  pad " ?Build started using a generic webhook"
+  pass_if_cause "WebHook"
+
+  pad " . Build started manually"
+  pass_if_cause "Manually"
+
+  ocp_print_grade_footer
+}
+
+function pass_if_cause
+{
+  CAUSE=$1
+  BUILDS=`oc get builds --no-headers | cut -d " " -f 1`
+  HAS_CAUSE="false"
+  for i in $BUILDS; do 
+    oc describe build $i | grep cause | grep $CAUSE
+    if [ "$?" == "0" ] ; then
+      HAS_CAUSE="true"
+    fi 
+  done
+
+  if [ "$HAS_CAUSE" == "true" ] ; then
+    print_PASS
+  else
+    print_FAIL
+  fi
+}
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"

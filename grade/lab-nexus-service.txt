@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+# Copyright 2017 Red Hat, Inc.
+#
+# NAME
+#     lab-nexus-service - grading script for DO288 ch09s04 ge
+#
+# SYNOPSIS
+#     lab-nexus-service {setup|cleanup}
+#
+#        setup   - prepare the system for starting the lab
+#        cleanup - perform post-lab cleanup
+#
+# DESCRIPTION
+#     This script, based on singular argument, either does setup, grading,
+#     cleanup, or solve for the particular lab of awesomeness.
+#
+# CHANGELOG
+#   * Tue Nov 29 2017 Douglas Silva <dsilva@redhat.com>
+#   - original code
+
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Initialize and set some variables
+run_as_root='true'
+
+# Required by the do288 shlib
+this='nexus-service'
+title='GE: Containerizing Nexus as a Service'
+nexus='http://content.example.com/ocp3.6/x86_64/installers/nexus-3.6.0-02-unix.tar.gz'
+nexus_data='http://content.example.com/ocp3.6/x86_64/installers/ch09s04-nexus-data.tar.gz'
+
+# This defines which subcommands are supported (setup, grade, etc.).
+# Corresponding lab_COMMAND functions must be defined.
+declare -a valid_commands=(setup cleanup)
+
+
+function lab_setup {
+
+  ocp_grab_lab_files
+
+  ocp_print_prereq_header
+
+  ocp_admin_login_on_master
+  ocp_check_openshift_up
+  ocp_check_git_repo_exists 'nexus3'
+  ocp_install_package 'skopeo'
+  ocp_check_image_exists 'rhel7'
+  print_line " Verify dependencies"
+  pad " . Verify if nexus-3.6.0-02-unix.tar.gz is available"
+  ocp_check_http_status "${nexus}" '200 OK'
+  pad " . Verify if ch09s04-nexus-data.tar.gz is available"
+  ocp_check_http_status "${nexus_data}" '200 OK'
+
+  oc login -u admin -p redhat
+  ocp_create_share "${this}" "vol0-1"
+  ocp_create_pv '300Mi' "vol0-1"
+
+  ocp_login_developer
+  
+  ocp_print_setup_footer
+}
+
+function lab_cleanup {
+
+  ocp_print_cleanup_header
+
+  ocp_cleanup_lab_files 
+ 
+  pad " . Remove the /home/student/nexus3 folder"
+  if rm -rf /home/student/nexus3 ; then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  print_line
+  print_line 'You can safely ignore failures from the next tasks:'
+  print_line
+
+  pad " . Remove the do288/nexus3 container image from local cache"
+  if docker rmi registry.lab.example.com:5000/do288/nexus3 ; then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  print_line " . Remove the do288/nexus3 container image from the" 
+  pad "   private registry"
+  if skopeo delete --tls-verify=false docker://registry.lab.example.com:5000/do288/nexus3 ; then
+    print_SUCCESS
+  else
+    print_FAIL
+  fi
+
+  
+  #XXX db pods are forever Terminating (oc get pod --all-namespaces) and projects too
+  #XXX can't explain the reason, added these sleeps as a workaround attempt.
+  #XXX only reliable fix I found was restart the OpenShift cluster VMs.
+   
+  ocp_admin_login_on_master
+  #XXX displays nothing if the project does not exist
+  ocp_delete_project 'nexus-service'
+  sleep 10
+
+  oc login -u admin -p redhat
+  sleep 5
+  ocp_delete_pv "vol0-1"
+  sleep 5
+  ocp_delete_share "${this}" "vol0-1"
+  
+  ocp_print_cleanup_footer
+}
+
+
+############### Don't EVER change anything below this line ###############
+
+# Source library of functions
+source /usr/local/lib/${function_lib}
+source /usr/local/lib/${platform_lib}
+
+grading_main_program "$@"
