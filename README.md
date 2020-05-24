@@ -725,7 +725,7 @@ vi assemble
 echo "---> Installing application source"
 cp -Rf /tmp/src/*.html ./
 
-#import
+# Import
 DATE=`date "+%b %d, %Y @ %H:%M %p"`
 
 echo "---> Creating info page"
