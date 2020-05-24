@@ -10,17 +10,22 @@ oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 # Chapter1
 
 [source-build]
+
 new-app --name hello --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs http://services.lab.example.com/nodejs-helloworld 
 
 new-app --name hello  https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
+
 [source-build]
 
 <--CHAPTE1-20200313-14
 
 #导入image 生成is,以便进行new-app 
+
  oc import-image tomcat:8.5-alpine --from docker.io/tomcat:8.5-alpine --confirm
+ 
 #进行new-app
-  oc new-app -i charpter1-source-build/tomcat:8.5-alpine --name my-tomcat-app
+
+oc new-app -i charpter1-source-build/tomcat:8.5-alpine --name my-tomcat-app
  
 oc new-app php~http://gitserver.example.com/mygitrepo
 
@@ -62,21 +67,25 @@ oc import-image myis --confirm \    --from registry.acme.example.com:5000/acme/a
 
 
 <deploy-image 
+
 oc new-project hello
 
 oc new-app --name ahttpd httpd:2.4
 
- oc new-project common
+oc new-project common
  
 oc import-image apache-httpd --confirm \    --from docker-registry.default.svc:5000/hello/ahttpd --insecure #local-vm
 
 oc import-image apache-httpd --confirm \    --from registry.lab.example.com:5000/do288/apache-httpd --insecure 
  
 --exec>
+
 <exec--
+
 student@workstation ~]$ lab docker-build setup
 
 git clone http://services.lab.example.com/rhel7-echo
+
 --exec>
 
  lab docker-build setup
@@ -84,8 +93,8 @@ git clone http://services.lab.example.com/rhel7-echo
 $ git clone http://services.lab.example.com/rhel7-echo
 
 $ cat ~/rhel7-echo/Dockerfile
-FROM registry.lab.example.com:5000/rhel7:7.3 
-CMD bash -c "while true; do echo test; sleep 5; done" 
+
+FROM registry.lab.example.com:5000/rhel7:7.3 CMD bash -c "while true; do echo test; sleep 5; done" 
 
 git clone https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
 
@@ -94,12 +103,14 @@ oc new-app --name echo --insecure-registry  https://github.com/woyaowoyao/D288-c
 oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.test.it.example.com/root/D288-ch1-01-rhel7-7-echo.git
 
 #ERROR:build error: Failed to push image: unauthorized: unable to validate token-> 重启虚拟机
+
 oc start-build echo
  
 oc get all --export  --as-template=jeesite-demo
  
- https://github.com/RedHatTraining/DO288-apps/tree/master/php-helloworld
-  cat /proc/sys/kernel/hostname 
+https://github.com/RedHatTraining/DO288-apps/tree/master/php-helloworld
+ 
+cat /proc/sys/kernel/hostname 
   
 oc logs -f bc/echo
 
@@ -254,6 +265,7 @@ RUN chgrp -R 0 /var/opt/rh/rh-nginx18 && chmod -R g=u /var/opt/rh/rh-nginx18
 #exes-
 
 #exes-container-build
+
 git clone \    http://services.lab.example.com/container-build
 
 oc new-project container-build
@@ -288,6 +300,7 @@ oc delete project container-build
 #exes-
 
 #exes-dd
+
 oc create cm myconf --from-literal key1=value1 
 
 oc get cm myconf
@@ -338,6 +351,7 @@ $ oc set volume dc/myapp --add \    -t secret -m /opt/app-root/secure \    --nam
 
 
 #exes-design-container
+
 RUN chgrp -R 0 /opt/app-root && \ chmod -R g=u /opt/app-root 
 
 USER 100
@@ -381,8 +395,11 @@ oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    
 oc set env dc/mydcname \    --from secret/mysecret
 
 #暂停触发
+
 oc set triggers dc/mydcname --from-config --remove
+
 #启用触发
+
 oc set triggers dc/mydcname --from-config
 
 $ oc rollout latest dc/hello
@@ -429,6 +446,7 @@ oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-hel
  oc start-build --follow bc/hello 
  
 #2020-0523-start 可运行
+
 [app-config]
 
 oc new-project  chapter2-app-config 
@@ -462,8 +480,8 @@ oc edit configmap/myappconf
 [app-config]
 
 [hello-swarm]  design-container
-hello-java 
-cd hello-java
+
+hello-java && cd hello-java
 
 oc new-project chapter2-hello-swarm-design-container
 
@@ -551,6 +569,7 @@ oc new-app --name hello -i common/hello-world
 oc login -u admin -p redhat  https://master.lab.example.com
 
  registry-grant.sh
+ 
 #!/bin/bash
 
 oc project default
