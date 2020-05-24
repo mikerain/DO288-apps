@@ -7,7 +7,7 @@ oc new-app https://github.com/openshift/test-maven-app -l name=my-maven-app
 oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
 
-#chapter1
+# Chapter1
 
 [source-build]
 new-app --name hello --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs http://services.lab.example.com/nodejs-helloworld 
@@ -158,7 +158,7 @@ oc start-build hello -F
 
 #nodejs-helloworld
 
-#<--CHAPTE2
+# Chapter2
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
 oc create serviceaccount apacheuser
@@ -294,7 +294,7 @@ oc set triggers dc/mydcname --from-config
 oc rollout latest mydcname
 
 
-#chapter2
+# Chapter2
 [source-build]
 oc new-project  source-build
 oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld --name hello
@@ -351,7 +351,7 @@ path= api/hello
 http://hello-chapter2-hello-swarm-design-container.apps.e380.example.opentlc.com/api/hello
 [hello-swarm]
 
-#《charpter3---
+# Charpter3---
 #pull下载
 oc adm policy add-role-to-user system:registry developer 
 #push上传
@@ -430,8 +430,8 @@ skopeo copy --dest-tls-verify=false \
 
 #exes-
 
-charpter3---》
-#chapter3
+
+# Chapter3
 
  sudo yum install docker-distribution skopeo 
   cat ~/DO288/labs/external-registry/config-firewall.sh 
@@ -462,7 +462,7 @@ sudo systemctl status docker
 
  docker run -d --name test \    workstation.lab.example.com:5000/rhel7-sleep 
  
-#[importance]
+# Importance]
 system:registry 
 This role allows a user to pull images from the internal registry.
 system:image-builder 
@@ -488,7 +488,7 @@ sudo systemctl status docker
 #[importance]
 
 
-#chapter4
+# Chapter4
 [java-serverhost]   manage-builds 
 cd java-serverhost
 oc new-project chapter4-java-serverhost-manage-builds 
@@ -689,7 +689,7 @@ bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/ap
 @@@@@
 #charpter4---》
 
-#chapter5
+# Chapter5
 #work 考试
 [s2i-scripts]
 sudo docker pull registry.access.redhat.com/rhscl/httpd-24-rhel7:latest
@@ -777,7 +777,7 @@ tree -a
 　 docker run --name test -u 1234    -p 8080:8080 -d s2i-sample-app 
 #chapter5
 
-#chapter6
+# Chapter6
 223p
 考试检查模板文件错误
 
@@ -785,8 +785,8 @@ oc export is,bc,dc,svc,route,pvc --as-template test \    > ~/test-template.yaml
 grep kind: test-template.yaml
   
 diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clean.yaml \
-   l
-#chapter7
+   
+# Chapter7
  
 [probes]
 
@@ -860,7 +860,7 @@ oc new-app --name camelHelloApp  https://github.com/woyaowoyao/DO288-apps.git --
 oc new-app --name camelTimeApp  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/camel-timer
  [camel-hello]
  
-#chapter8
+# Chapter8
 
 oc new-app --name nexus3  https://github.com/woyaowoyao/DO288-apps.git --context-dir=/nexus3
 
@@ -882,7 +882,7 @@ $ podman pull registry.connect.redhat.com/sonatype/nexus-repository-manager
 --docker-image Provides the URL to a container image to be deployed.
 
 
-#CHAPTE2-->
+
 
 /etc/origin/node/node-config.yaml
  
