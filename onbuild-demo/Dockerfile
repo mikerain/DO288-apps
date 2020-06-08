@@ -1,4 +1,4 @@
-FROM rhel7:7.3
+FROM docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 
 RUN yum install -y   nginx \
