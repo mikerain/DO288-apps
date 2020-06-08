@@ -1,4 +1,4 @@
-FROM docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest 
+FROM  docker.io/kuabh2012/centos7-systemd:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 
 RUN yum install -y   nginx \
