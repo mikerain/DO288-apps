@@ -1,8 +1,8 @@
 FROM  docker.io/centos/nginx-112-centos7:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 
-RUN yum install -y   nginx \
-  && yum clean all
+#RUN yum install -y   nginx \
+ # && yum clean all
 
 ADD index.html /usr/share/nginx/html
 
