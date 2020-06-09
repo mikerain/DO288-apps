@@ -1,4 +1,4 @@
-FROM  docker.io/kuabh2012/centos7-systemd:latest 
+FROM  docker.io/centos/nginx-112-centos7:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 
 RUN yum install -y   nginx \
