@@ -1,8 +1,5 @@
-#FROM  docker.io/centos/nginx-112-centos7:latest 
-FROM registry.access.redhat.com/rhel7:7.3
-
-RUN DISABLES="--disablerepo=rhel-server-extras --disablerepo=rhel-server --disablerepo=rhel-fast-datapath --disablerepo=rhel-server-optional --disablerepo=rhel-server-ose --disablerepo=rhel-server-rhscl" && \ 
-   yum $DISABLES -y   nginx   && yum clean all
+FROM nginx:latest 
+#FROM registry.access.redhat.com/rhel7:7.3
 
 ADD index.html /usr/share/nginx/html
 
