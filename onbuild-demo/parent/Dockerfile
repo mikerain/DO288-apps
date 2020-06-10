@@ -14,3 +14,4 @@ CMD [ "npm", "start" ]
 
 
 
+#docker build -t nparent:latest .
