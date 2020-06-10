@@ -20,6 +20,7 @@ oc describe scc/restricted  oc describe scc/anyuid
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo --name onbuild-demo
 
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo-0 --name onbuild-demo-0
 EXPOSE 8080 
 
 LABEL io.openshift.expose-services="8080:http
