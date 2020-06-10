@@ -378,7 +378,7 @@ RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd
 
 # exes-app-config 
 
-oc new-app --name myapp  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+
 oc new-app --name myap centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 $ oc create configmap myappconf    --from-literal APP_MSG="Test Message" 
 
@@ -386,9 +386,9 @@ oc get -o yaml configmap/myappconf
 
 oc describe configmap/myappconf 
 
-oc create secret generic myappfilesec --from-file /home/student/app-config/myapp.sec 
-
 oc create secret generic myappfilesec --from-file /root/redhat-do288/do288-apps/app-config/myapp.sec 
+
+oc create secret generic myappfilesec --from-file /root/github/DO288-apps/app-config//myapp.sec
 
 oc create secret generic secret_name \    --from-file /home/demo/mysecret.txt
 
@@ -397,9 +397,11 @@ oc create configmap config_map_name \    --from-literal key1=value1 \    --from-
 oc create configmap config_map_name \    --from-file /home/demo/conf.tx
 
 oc set env dc/myapp \    --from configmap/myappconf
-
+oc set env dc/myap \    --from secret/myappfilesec
 oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    --name myvol --configmap-name myconf
 
+ oc set volume dc/myap --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
+ 
 oc set env dc/mydcname \    --from secret/mysecret
 
 #暂停触发
