@@ -125,6 +125,10 @@ git clone https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
 
 oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.test.it.example.com/root/D288-ch1-01-rhel7-7-echo.git
 
+# oc new-app --name echo --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=rhel7-echo 
+
+# oc new-app --name info --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=rhel7-info
+
 #ERROR:build error: Failed to push image: unauthorized: unable to validate token-> 重启虚拟机
 
 oc start-build echo
