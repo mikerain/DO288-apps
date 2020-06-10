@@ -18,7 +18,7 @@ oc describe scc/restricted  oc describe scc/anyuid
 
 # exes-onbuild-demo
 
-oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo --name onbuild-demo
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo --name onbuild-demo
 
 EXPOSE 8080 
 
@@ -29,6 +29,8 @@ RUN sed -i "s/listen 80/listen 8080/g" /etc/nginx.conf
 RUN chgrp -R 0 /var/opt/rh/rh-nginx18 && chmod -R g=u /var/opt/rh/rh-nginx18
 
 #exes-
+
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-world-nginx --name hello-world-nginx
 
 # exes-container-build
 
