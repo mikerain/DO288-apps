@@ -231,10 +231,11 @@ oc set triggers dc/mydcname --from-config
 oc rollout latest mydcname
 
 #exes-build-template
-cat ~/DO288/labs/build-template/create-app.sh oc new-app --template common/php-mysql-ephemeral \  -p NAME=quotesapi \  -p APPLICATION_DOMAIN=quote.apps.lab.example.com \  -p SOURCE_REPOSITORY_URL=http://services.lab.example.com/quotes \  -p DATABASE_SERVICE_NAME=quotesdb \  -p DATABASE_USER=user1 \  -p DATABASE_PASSWORD=mypa55 \  --name quotes
+cat ~/DO288/labs/build-template/create-app.sh 
+
+oc new-app --template common/php-mysql-ephemeral \  -p NAME=quotesapi \  -p APPLICATION_DOMAIN=quote.apps.lab.example.com \  -p SOURCE_REPOSITORY_URL=http://services.lab.example.com/quotes \  -p DATABASE_SERVICE_NAME=quotesdb \  -p DATABASE_USER=user1 \  -p DATABASE_PASSWORD=mypa55 \  --name quotes
 
 oc describe svc quotesdb | grep Endpoints 
-
 
 oc start-build hello -F
 
