@@ -155,7 +155,7 @@ oc import-image php --confirm \    --from  --insecure
 
 oc import-image apache-httpd --confirm  --from  registry.lab.example.com:5000/do288/apache-httpd --insecure 
 
-#  oc import-image apache-httpd --confirm  --from docker.io/httpd --insecure 
+#  oc import-image apache-httpd --confirm  --from docker.io/httpd --insecure #webconsole 
 
 docker-registry.default.svc:5000/do288-cha1/apache-httpd --insecure 
 
