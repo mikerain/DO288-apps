@@ -163,11 +163,17 @@ oc rsh quotesapi-1-5zncm bash -c \    'curl $DATABASE_SERVICE_NAME:3306'
 mysql -h 110.110.110.110 -uroot -p abcd123
 
 create database name; 创建数据库
+
 　　use databasename; 选择数据库
+  
 　　drop database name 直接删除数据库，不提醒
+  
 　　show tables; 显示表
+  
 　　describe tablename; 表的详细描述
+  
 　　select中加上distinct去除重复字段
+  
 　　mysqladmin drop database name 删除数据库前，有提示。
 
 oc cp ./DO288/labs/build-template/quote.sql \    quotesdb-1-hh2g9:/tmp/quote.sql
@@ -250,7 +256,7 @@ oc describe scc/restricted  oc describe scc/anyuid
 
 #  RUN chgrp -R 0 directory && \    chmod -R g=u directory
 
-#exes-onbuild-demo
+# exes-onbuild-demo
 
 oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo --name onbuild-demo
 
@@ -264,7 +270,7 @@ RUN chgrp -R 0 /var/opt/rh/rh-nginx18 && chmod -R g=u /var/opt/rh/rh-nginx18
 
 #exes-
 
-#exes-container-build
+# exes-container-build
 
 git clone \    http://services.lab.example.com/container-build
 
@@ -337,7 +343,7 @@ oc rollout latest mydcnam
 
 #exes-dd
 
-#exes-app-config 
+# exes-app-config 
 
  oc new-app --name myapp \    --build-env npm_config_registry=\ http://services.lab.example.com:8081/nexus/content/groups/nodejs \    http://services.lab.example.com/app-config 
 
@@ -350,7 +356,7 @@ $ oc set volume dc/myapp --add \    -t secret -m /opt/app-root/secure \    --nam
 #exes-
 
 
-#exes-design-container
+# exes-design-container
 
 RUN chgrp -R 0 /opt/app-root && \ chmod -R g=u /opt/app-root 
 
@@ -370,8 +376,10 @@ oc edit configmap/appconfig
 
 RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
 
-oc new-app --name myapp  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+# exes-app-config 
 
+oc new-app --name myapp  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+oc new-app --name myap centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 $ oc create configmap myappconf    --from-literal APP_MSG="Test Message" 
 
 oc get -o yaml configmap/myappconf
