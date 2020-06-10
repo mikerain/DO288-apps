@@ -13,13 +13,11 @@ oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
 oc new-app --name hello --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs http://services.lab.example.com/nodejs-helloworld 
 
-#
+#local-start
 
 oc new-app --name hello -i onbuild-demo/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
 
-[source-build]
-
-<--CHAPTE1-20200313-14
+ python -m json.tool package.json 
 
 #导入image 生成is,以便进行new-app 
 
@@ -28,6 +26,8 @@ oc import-image tomcat:8.5-alpine --from docker.io/tomcat:8.5-alpine --confirm
 #进行new-app
 
 oc new-app -i onbuild-demo/tomcat:8.5-alpine --name my-tomcat-app
+
+#local-end
  
 oc new-app php~http://gitserver.example.com/mygitrepo
 
