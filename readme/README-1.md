@@ -9,21 +9,45 @@ oc new-app https://github.com/sclorg/cakephp-ex -l name=my-php-app
 
 # Chapter1
 
-[source-build]
-
 oc new-app --name hello --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs http://services.lab.example.com/nodejs-helloworld 
 
 # local-start
 
+[source-build]
+
 oc new-app --name hello -i onbuild-demo/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
 
- python -m json.tool package.json 
+#1.需要先导入镜像Add to Project  https://github.com/openshift/origin/blob/master/examples/image-streams/image-streams-centos7.json
+#2.oc new-app --name myap2 centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+
+
+ npm config set registry https://registry.npm.taobao.org 
+
+npm info underscore
+
+oc new-app --name hello     --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs     
+
+http://services.lab.example.com/nodejs-helloworld
+
+oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
+
+oc new-app --name hello  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
+
+oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
+
+#http://services.lab.example.com:8081/nexus/content/groups/nodejs
+
+http://services.lab.example.com/nodejs-helloworld 
+
+ python -m json.tool nodejs-helloworld/package.json
+
+[source-build]
 
 #导入image 生成is,以便进行new-app 
 
 oc import-image tomcat:8.5-alpine --from docker.io/tomcat:8.5-alpine --confirm
  
-#进行new-app
+#进行new-app //上一步导入镜像到project onbuild-demo
 
 oc new-app -i onbuild-demo/tomcat:8.5-alpine --name my-tomcat-app
 
@@ -55,7 +79,8 @@ oc new-app --strategy source http://gitserver.example.com/user/mygitrepo
 
 oc new-app --code http://gitserver.example.com/mygitrepo 
 
-oc new-app --docker-image registry.example.com/mycontainerimage
+# 由docker镜像直接生成项目
+# oc new-app --docker-image registry.example.com/mycontainerimage
 
 oc new-app --name hello -i php --code http://gitserver.example.com/mygitrepo
 
@@ -80,27 +105,23 @@ oc import-image apache-httpd --confirm \    --from docker-registry.default.svc:5
 
 oc import-image apache-httpd --confirm \    --from registry.lab.example.com:5000/do288/apache-httpd --insecure 
  
---exec>
-
-<exec--
+[docker-build]
 
 student@workstation ~]$ lab docker-build setup
 
 git clone http://services.lab.example.com/rhel7-echo
 
---exec>
-
- lab docker-build setup
+lab docker-build setup
  
-$ git clone http://services.lab.example.com/rhel7-echo
+git clone http://services.lab.example.com/rhel7-echo
 
-$ cat ~/rhel7-echo/Dockerfile
+cat ~/rhel7-echo/Dockerfile
 
 FROM registry.lab.example.com:5000/rhel7:7.3 CMD bash -c "while true; do echo test; sleep 5; done" 
 
 git clone https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
 
-oc new-app --name echo --insecure-registry  https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
+# oc new-app --name echo --insecure-registry  https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
 
 oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.test.it.example.com/root/D288-ch1-01-rhel7-7-echo.git
 
@@ -122,13 +143,15 @@ oc status --suggest
 
 oc logs echo-5-htskx -c echo
 
+[docker-build]
+
 oc adm policy add-scc-to-user anyuid -n do288-cha1 -z default
  
 oc import-image php --confirm \    --from  --insecure
 
 oc import-image apache-httpd --confirm  --from  registry.lab.example.com:5000/do288/apache-httpd --insecure 
 
-oc import-image apache-httpd --confirm  --from docker.io/httpd --insecure 
+#  oc import-image apache-httpd --confirm  --from docker.io/httpd --insecure 
 
 docker-registry.default.svc:5000/do288-cha1/apache-httpd --insecure 
 
@@ -184,25 +207,6 @@ oc rsh -t quotesdb-1-hh2g9
  
 mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/quote.sql 
 
-npm config set registry https://registry.npm.taobao.org 
-
-npm info underscore
-
-oc new-app --name hello     --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs     
-
-http://services.lab.example.com/nodejs-helloworld
-
-oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
-
-oc new-app --name hello  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
-
-oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
-
-#http://services.lab.example.com:8081/nexus/content/groups/nodejs
-
-http://services.lab.example.com/nodejs-helloworld 
-
- python -m json.tool nodejs-helloworld/package.json
  
  oc start-build --follow bc/hello 
 
@@ -228,15 +232,5 @@ cat ~/DO288/labs/build-template/create-app.sh oc new-app --template common/php-m
 oc describe svc quotesdb | grep Endpoints 
 
 
-#exes- source-build 20200317
-
-oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld --name hello
-
-oc new-app https://github.com/youruser/yourgitrepo --context-dir=nodejs-helloworld
-
-oc expose svc/hello
-
 oc start-build hello -F
-
-#nodejs-helloworld
 
