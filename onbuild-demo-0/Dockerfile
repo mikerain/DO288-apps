@@ -1,6 +1,6 @@
-#FROM registry.access.redhat.com/rhscl/nodejs-6-rhel7 
+FROM docker.io/richxsl/rhel7:latest
 #FROM registry.access.redhat.com/rhel7:7.3
-FROM registry.access.redhat.com/ubi8:8.0
+#FROM registry.access.redhat.com/ubi8:8.0
 RUN yum install -y --disableplugin=subscription-manager --nodocs nginx \
   && yum clean all
 

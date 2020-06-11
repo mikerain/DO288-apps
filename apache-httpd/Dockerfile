@@ -1,5 +1,5 @@
-FROM registry.access.redhat.com/rhel7:7.6
-
+#FROM registry.access.redhat.com/rhel7:7.6
+FROM docker.io/richxsl/rhel7
 RUN rpm --rebuilddb && \
   yum install -y httpd \
   && yum clean all

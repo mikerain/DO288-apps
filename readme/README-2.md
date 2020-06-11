@@ -1,5 +1,12 @@
 # Chapter2
 
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-frontend-0 --name todo-frontend-0 #rhel7
+
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-frontend --name todo-frontend  #ubi8
+
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java --name hello-java  #ubi8
+
+do288-w\todo-frontend-0
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
 
