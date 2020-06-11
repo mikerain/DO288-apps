@@ -1,5 +1,5 @@
-FROM registry.access.redhat.com/rhel7:7.6
-
+#FROM registry.access.redhat.com/rhel7:7.6
+FROM docker.io/richxsl/rhel7:latest
 LABEL version="1.0"
 LABEL description="To Do List application front-end"
 LABEL creationDate="2017-12-25"
