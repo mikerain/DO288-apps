@@ -127,7 +127,7 @@ oc describe bc simple
 
 -> Webhook Generic
 
- curl -X POST -k  https://master.lab.example.com:443/oapi/v1/namespaces/build-app/buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
+ # curl -X POST -k  https://master.lab.example.com:443/oapi/v1/namespaces/build-app/buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
  
  curl -X POST -k   https://master.e380.example.opentlc.com:443/apis/build.openshift.io/v1/namespaces/build-app/buildconfigs/simple/webhooks/asDMAVPxYKyHNZuubM_o/generic
 
@@ -208,7 +208,7 @@ oc describe build trigger-2 | grep cause
 
 oc import-image php:latest -n openshift
 
-oc import-image docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest -n openshift
+# oc import-image docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest -n openshift
 #exes-
 
 #exes--post-commit
