@@ -6,6 +6,8 @@
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java --name hello-java  #ubi8
 
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=apache-httpd --name apache-httpd #rhel7
+
 do288-w\todo-frontend-0
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
@@ -261,6 +263,7 @@ oc edit configmap/myappconf
 
 [app-config]
 
+# oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
 [hello-swarm]  design-container
 
 hello-java && cd hello-java

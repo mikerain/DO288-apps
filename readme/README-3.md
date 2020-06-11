@@ -17,8 +17,13 @@ oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-reg
  
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
  
-adding the registry to the INSECURE_REGISTRY line and uncommenting it. #INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000' INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000 --insecureregistry  docker-registry-default.apps.lab
+ vi /etc/sysconfig/docker 
+
+adding the registry to the INSECURE_REGISTRY line and uncommenting it. 
+INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000' INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000 --insecureregistry  docker-registry-default.apps.lab
  
+ INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000 --insecure-registry docker-registry-default.apps.lab.example.com'
+
 sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
 
 sudo systemctl status docker 
@@ -27,6 +32,8 @@ sudo systemctl start docker
 
 oc import-image myis --confirm --insecure  --from registry.example.com:5000/myimage
  
+#  oc import-image openjdk18-openshift --confirm --insecure --from docker.io/sibdocker/openjdk18
+
 sudo systemctl start docker-distribution
 
 sudo systemctl status docker-distribution
@@ -78,7 +85,7 @@ oc login -u developer -p redhat https://master.lab.example.com
  
 #!/bin/bash
 
- oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image
+ # oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image
  
  cat registry-deny.sh 
  
@@ -99,7 +106,7 @@ oc login -u developer -p redhat
  
 #!/bin/bash
 
-skopeo copy --dest-tls-verify=false \
+# skopeo copy --dest-tls-verify=false \
     --dest-creds=developer:$TOKEN \
     oci:/home/student/DO288/labs/expose-image/php-info \
     docker://docker-registry-default.apps.lab.example.com/common/php-info
@@ -107,7 +114,7 @@ skopeo copy --dest-tls-verify=false \
 
 
 
-sudo yum install docker-distribution skopeo 
+# sudo yum install docker-distribution skopeo 
  
 cat ~/DO288/labs/external-registry/config-firewall.sh 
   

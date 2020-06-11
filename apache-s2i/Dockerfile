@@ -1,4 +1,5 @@
-FROM registry.access.redhat.com/rhel7.3
+FROM FROM docker.io/richxsl/rhel7  
+#registry.access.redhat.com/rhel7.3
 
 MAINTAINER Red Hat Training <training@redhat.com>
 
