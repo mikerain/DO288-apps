@@ -1,4 +1,5 @@
-FROM registry.lab.example.com:5000/rhel7:7.3
+#FROM registry.lab.example.com:5000/rhel7:7.3
+FROM registry.access.redhat.com/rhel7.3
 
 MAINTAINER Red Hat Training <training@redhat.com>
 

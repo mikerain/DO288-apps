@@ -42,28 +42,29 @@ RUN chgrp -R 0 /var/opt/rh/rh-nginx18 && chmod -R g=u /var/opt/rh/rh-nginx18
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-world-nginx --name hello-world-nginx
 
-# exes-container-build
+# [container-build]-start
 
 git clone \    http://services.lab.example.com/container-build
 
 oc new-project container-build
 
-oc new-app --name hello \    http://services.lab.example.com/container-build \    --insecure-registry 
+  oc new-app --name hello \    http://services.lab.example.com/container-build \    --insecure-registry 
 
-oc create serviceaccount apacheuse
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build --name container-build#
+
+# fix oc create serviceaccount apacheuse
 
 oc login -u admin -p redhat  https://master.lab.example.com/
-
-oc project container-build
 
 oc adm policy add-scc-to-user anyuid -z apacheuser
 
 oc login -u developer -p redhat \    https://master.lab.example.com
 
 oc edit dc/hell
-terminationGracePeriodSeconds: 30      
+# fix terminationGracePeriodSeconds: 30      
 
 serviceAccountName: apacheuse
+
 
 RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
 
@@ -75,7 +76,7 @@ git commit -a -m "fix"
 
 oc delete project container-build
 
-#exes-
+# [container-build]-end
 
 #exes-dd
 
