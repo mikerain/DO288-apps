@@ -52,7 +52,7 @@ oc new-project container-build
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build --name container-build#
 
-# fix oc create serviceaccount apacheuse
+# fix-1-start oc create serviceaccount apacheuse
 
 oc login -u admin -p redhat  https://master.lab.example.com/
 
@@ -60,12 +60,14 @@ oc adm policy add-scc-to-user anyuid -z apacheuser
 
 oc login -u developer -p redhat \    https://master.lab.example.com
 
-oc edit dc/hell
-# fix terminationGracePeriodSeconds: 30      
+oc edit dc/hell terminationGracePeriodSeconds: 30      
 
-serviceAccountName: apacheuse
+# fix-1-end serviceAccountName: apacheuse
 
+# fix-2-start
 
+ oc delete serviceaccount apacheuser 
+ 
 RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
 
 RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
