@@ -20,6 +20,9 @@ oc new-app --name hello -i onbuild-demo/nodejs-8-centos7~https://github.com/woya
 #1.需要先导入镜像Add to Project  https://github.com/openshift/origin/blob/master/examples/image-streams/image-streams-centos7.json
 #2.oc new-app --name myap2 centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 
+# opentlc oc new-app --name hello https://github.com/RedHatTraining/DO288-apps --context-dir=nodejs-helloworld
+
+# opentlc oc new-app --name hello https://github.com/woyaowoyao/DO288-apps --context-dir=nodejs-helloworld
 
  npm config set registry https://registry.npm.taobao.org 
 
