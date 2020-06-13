@@ -5,6 +5,8 @@
 
 [s2i-scripts]
 
+sudo yum install source-to-image 
+
 sudo docker pull registry.access.redhat.com/rhscl/httpd-24-rhel7:latest
 
 docker run --name test -it registry.access.redhat.com/rhscl/httpd-24-rhel7 bash
@@ -37,6 +39,8 @@ oc import-image my-ruby --from=docker.io/openshift/ruby-20-centos7 --confirm
 
 #work oc new-project do288-5
 
+# oc new-app --name my2hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
+
 # oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 vi assemble
 #@@@@考试
@@ -61,6 +65,10 @@ $ oc expose svc hello --port 8080     --hostname hello.apps.lab.example.com
 
 run-httpd -e debug $@
 
+ oc new-app -i chapter5/hello --name hello2
+
+ # oc new-app -i chapter5/my2hello2 --name my2hello2
+
 [s2i-scripts]@@@@
 
 skopeo delete --tls-verify=false \    docker://registry.lab.example.com:5000/s2i-do288-httpd
@@ -68,6 +76,8 @@ skopeo delete --tls-verify=false \    docker://registry.lab.example.com:5000/s2i
 oc describe dc/mysql | grep -A 3 'Strategy:' 
 
 [s2i build]
+
+# s2i create s2i-do288-httpd s2i-do288-httpd
 
 s2i create image_name director
 
