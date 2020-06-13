@@ -49,9 +49,9 @@ oc import-image openshift/jenkins:v3.10 --reference-policy='local' --from=docker
 oc import-image openshift/jenkins:v3.10 --from=docker.io/openshift/jenkins-2-centos7:v3.10 --confirm
 
 
-oc adm policy add-role-to-user system:registry andrew
+# oc adm policy add-role-to-user system:registry andrew
  
-oc adm policy add-role-to-user system:image-builder andrew
+# oc adm policy add-role-to-user system:image-builder andrew
 
 #exes-image-stream
 

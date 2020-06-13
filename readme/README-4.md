@@ -16,7 +16,7 @@ oc new-app --name jhost2 -i fuse7-java-openshift:1.1 https://github.com/woyaowoy
 
 oc new-app --name jhost3 -i  wildfly:9.0  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
 
-#Work oc new-app --name jhost3 -i  java:8  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost #workwell
+#  oc new-app --name jhost3 -i  java:8  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost #workwell
 
 oc start-build bc/jhost 
 
@@ -74,14 +74,12 @@ oc set triggers bc/name --from-gitlab --remove
 
 oc new-project post-commit
 
-oc new-app --name builds-for-managers https://github.com/woyaowoyao/DO288-apps.git --context-dir=builds-for-managers
+# oc new-app --name builds-for-managers https://github.com/woyaowoyao/DO288-apps.git --context-dir=builds-for-managers
 
 oc new-app --name hook  https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
 
-oc set build-hook bc/hook --post-commit --command -- \
-
-    bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\
-	
+# oc set build-hook bc/hook --post-commit --command -- \
+    bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\	
 	${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
 	
 oc start-build bc/hook -F 
@@ -97,11 +95,12 @@ oc set env bc/hook DEVELOPER="Your Name
   
 [post-commit]
 
+
 [build-app]
 
 oc new-project build-app
 
-oc new-app --name simple  https://github.com/woyaowoyao/DO288-apps.git --context-dir=build-app
+# oc new-app --name simple  https://github.com/woyaowoyao/DO288-apps.git --context-dir=build-app
 
 oc expose svc/simple
 
@@ -131,6 +130,7 @@ oc describe bc simple
  
  curl -X POST -k   https://master.e380.example.opentlc.com:443/apis/build.openshift.io/v1/namespaces/build-app/buildconfigs/simple/webhooks/asDMAVPxYKyHNZuubM_o/generic
 
+# curl -X POST -k   https://master.3e92.example.opentlc.com:443/apis/build.openshift.io/v1/namespaces/chapter3/buildconfigs/simple/webhooks/8P--cRelt2vu5rNhjQMe/generic
  
 #exes-[build-app]
 

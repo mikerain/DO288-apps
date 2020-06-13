@@ -155,7 +155,7 @@ RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd
 
 # exes-app-config 
 
-oc new-app --name myap centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+oc new-app --name myap https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 
 oc new-app --name myap2 centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 
