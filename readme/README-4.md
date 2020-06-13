@@ -79,8 +79,8 @@ oc new-project post-commit
 oc new-app --name hook  https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
 
 # oc set build-hook bc/hook --post-commit --command -- \
-    bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\	
-	${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
+#    bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\	
+#	${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
 	
 oc start-build bc/hook -F 
 
@@ -189,16 +189,11 @@ cd ~/DO288/labs/trigger-builds
 
 docker load -i php-70-rhel7-newer.tar.gz
 
-docker tag \
-
-    registry.lab.example.com:5000/rhscl/php-70-rhel7:7.0-5.14 \
+docker tag     registry.lab.example.com:5000/rhscl/php-70-rhel7:7.0-5.14 \
 	
     registry.lab.example.com:5000/rhscl/php-70-rhel7:latest
 	
-docker push \
-
-    registry.lab.example.com:5000/rhscl/php-70-rhel7:latest
-
+docker push    registry.lab.example.com:5000/rhscl/php-70-rhel7:latest
 
 oc login -u admin -p redhat  https://master.lab.example.com
 
@@ -211,7 +206,7 @@ oc import-image php:latest -n openshift
 # oc import-image docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest -n openshift
 #exes-
 
-#exes--post-commit
+# post-commit
 
 oc set build-hook bc/name \
 
