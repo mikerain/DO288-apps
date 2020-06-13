@@ -5,7 +5,7 @@
 
 oc new-project probes
 
-oc new-app --name probes    --build-env npm_config_registry=https://registry.npm.taobao.org https://github.com/woyaowoyao/DO288-apps.git --context-dir=/probes
+# oc new-app --name probes --build-env npm_config_registry=https://registry.npm.taobao.org https://github.com/woyaowoyao/DO288-apps.git --context-dir=/probes
 
 http://probes-probes.apps.os311.test.it.example.com/flip?op=kill
 change to unhealthy

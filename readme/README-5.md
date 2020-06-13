@@ -29,7 +29,7 @@ sudo oc import-image my-httpd --from=docker.io/robin9999/httpd-24 --confirm
 
 sudo oc import-image httpd-24 --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
 
-sudo oc import-image docker-registry.default.svc:5000/openshift/httpd-24:latest --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
+# sudo oc import-image docker-registry.default.svc:5000/openshift/httpd-24:latest --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
 
 oc import-image sonatype/nexus-repository-manager --from=registry.connect.redhat.com/sonatype/nexus-repository-manager --confirm
 
@@ -37,7 +37,7 @@ oc import-image my-ruby --from=docker.io/openshift/ruby-20-centos7 --confirm
 
 #work oc new-project do288-5
 
-oc new-app --name hello  httpd https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
+# oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 vi assemble
 #@@@@考试
 ######## CUSTOMIZATION START HERE ############
