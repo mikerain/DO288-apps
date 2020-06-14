@@ -70,6 +70,8 @@ run-httpd -e debug $@
 
  # oc new-app -i chapter5/my2hello2 --name my2hello2
 
+ http://my2hello2-chapter5.apps.3e92.example.opentlc.com/info.html
+
 [s2i-scripts]@@@@
 
 skopeo delete --tls-verify=false \    docker://registry.lab.example.com:5000/s2i-do288-httpd
@@ -124,10 +126,19 @@ tree -a
 　 docker run --name test -u 1234    -p 8080:8080 -d s2i-sample-app 
 #chapter5
 
-# [custom-s2i]
+# [custom-s2i] 本地构建docker镜像并且导入到osp 
 
 cd custom-s2i
- docker build -t s2i-do288-go .
 
- 
+# docker build -t s2i-do288-go .
+
+ # docker run --name go-test -u 1234 \    -p 8080:8080 -d s2i-go-app 
+
+#  docker tag s2i-do288-go \    registry.lab.example.com:5000/s2i-do288-go
+
+ # docker push \    registry.lab.example.com:5000/s2i-do288-go 
+
+  # oc import-image s2i-do288-go \    --from registry.lab.example.com:5000/s2i-do288-go \    --confirm --insecure 
+
+# oc new-app --name greet \    s2i-do288-go~http://services.lab.example.com/go-hello 
 
