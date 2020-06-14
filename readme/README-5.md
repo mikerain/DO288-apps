@@ -9,9 +9,10 @@ sudo yum install source-to-image
 
 sudo docker pull registry.access.redhat.com/rhscl/httpd-24-rhel7:latest
 
-docker run --name test -it registry.access.redhat.com/rhscl/httpd-24-rhel7 bash
+# docker run --name test -it registry.access.redhat.com/rhscl/httpd-24-rhel7 bash
 
-cat /usr/libexec/s2i/assemble 
+# cat /usr/libexec/s2i/assemble 
+
 cat /usr/libexec/s2i/run 
 cat /usr/libexec/s2i/usage 
 
