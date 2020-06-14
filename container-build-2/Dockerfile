@@ -1,5 +1,7 @@
 #FROM registry.lab.example.com:5000/rhel7:7.3
-FROM registry.access.redhat.com/rhel7.3
+FROM registry.access.redhat.com/ubi8:8.0 
+#registry.access.redhat.com/rhel7.3
+
 
 MAINTAINER Red Hat Training <training@redhat.com>
 
@@ -21,7 +23,7 @@ ENV DOCROOT=/var/www/html \
     LOG_PATH=/var/log/httpd
 
 # Need this for installing Apache from classroom yum repo
-ADD training.repo /etc/yum.repos.d/training.repo
+#ADD training.repo /etc/yum.repos.d/training.repo
 
 RUN   yum install -y --disablerepo=base --disableplugin=subscription-manager --setopt=tsflags=nodocs --noplugins httpd && \
       yum clean all --disablerepo=base --disableplugin=subscription-manager --noplugins -y && \
