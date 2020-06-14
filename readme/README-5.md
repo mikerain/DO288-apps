@@ -84,21 +84,27 @@ s2i create image_name director
 
 docker build -t builder_image .
 
-docker build -t s2i-do288-httpd . 
+# @1 dockerfile 构建容器
+
+# docker build -t s2i-do288-httpd .  
 
 s2i build src builder_image tag_name
 
 s2i build test/test-app s2i-do288-nginx nginx-test
 
-docker tag s2i-do288-nginx         myregistry.example.com:5000/s2i-do288-nginx
+# @2 tag到本地容器库
 
-docker tag s2i-do288-nginx         myregistry.example.com:5000/s2i-do288-nginx
+# docker tag s2i-do288-nginx  myregistry.example.com:5000/s2i-do288-nginx  
 
-docker push myregistry.example.com:5000/s2i-do288-nginx
+# @3 push
 
-oc import-image s2i-do288-nginx     --from myregistry.example.com:5000/s2i-do288-nginx     --confirm --insecure=true
+# docker push myregistry.example.com:5000/s2i-do288-nginx
 
-oc new-app --name nginx-test    s2i-do288-nginx~git_repository
+
+# @4 导入 oc import-image s2i-do288-nginx --from myregistry.example.com:5000/s2i-do288-nginx --confirm --insecure=true
+
+
+# @5 运行 oc new-app --name nginx-test    s2i-do288-nginx~git_repository
 
 [s2i build]
 
@@ -108,7 +114,7 @@ docker build -t s2i-do288-httpd .
 
 s2i create s2i-do288-httpd s2i-do288-httpd
 
-s2i build test/test-app/ \    s2i-do288-httpd s2i-sample-app 
+s2i build test/test-app/ \  s2i-do288-httpd s2i-sample-app 
   
 [s2i-do288-httpd]
  
@@ -117,6 +123,11 @@ curl -s  https://github-production-release-asset-2e65be.s3.amazonaws.com/1632316
 tree -a 
 　 docker run --name test -u 1234    -p 8080:8080 -d s2i-sample-app 
 #chapter5
+
+# [custom-s2i]
+
+cd custom-s2i
+ docker build -t s2i-do288-go .
 
  
 
