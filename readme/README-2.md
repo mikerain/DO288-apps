@@ -89,6 +89,7 @@ git commit -a -m "fix"
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build-2 --name container-build2
 
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build-2 --name container-build3
 oc delete project container-build
 
 # [container-build]-end
