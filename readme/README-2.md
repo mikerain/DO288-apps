@@ -286,7 +286,7 @@ hello-java && cd hello-java
 
 oc new-project chapter2-hello-swarm-design-container
 
-oc new-app --name hello https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
+# oc new-app --name hello https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
 
 oc logs -f bc/hello
 
@@ -294,11 +294,11 @@ oc get pods
 
 crul http://hello-chapter2-hello-swarm-design-container.apps.os311.test.it.example.com/api/hello
 
-oc create configmap appconfig --from-literal APP_MSG='D288 HELL'
+# oc create configmap appconfig --from-literal APP_MSG='D288 HELL'
 
-oc set env dc/hello --from cm/appconfig
+# oc set env dc/hello --from cm/appconfig
 
-oc rsh hello-3-ks1np env | grep APP_MSG 
+# oc rsh hello-3-ks1np env | grep APP_MSG 
  
 path= api/hello
 
