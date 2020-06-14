@@ -46,13 +46,15 @@ http://services.lab.example.com/nodejs-helloworld
 
 [source-build]
 
-#导入image 生成is,以便进行new-app 
+# 导入image 生成is,以便进行new-app 
 
 oc import-image tomcat:8.5-alpine --from docker.io/tomcat:8.5-alpine --confirm
  
 #进行new-app //上一步导入镜像到project onbuild-demo
 
 oc new-app -i onbuild-demo/tomcat:8.5-alpine --name my-tomcat-app
+
+oc new-app -i chapter2/tomcat:8.5-alpine --name my-tomcat-app
 
 # local-end
  

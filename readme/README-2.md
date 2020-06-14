@@ -94,13 +94,42 @@ oc delete project container-build
 
 # [container-build]-end
 
-#exes-dd
+# [app-config]-start workwe ll
+
+
+git clone https://github.com/woyaowoyao/DO288-apps
+
+DO288-apps/app-config
+
+oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config --name myapp 
+
+oc expose svc/myapp
+
+oc get route
+
+# oc create configmap myconfig --from-literal APP_MSG='TEST'
+
+oc get -o json cm/myconfig
+
+# oc set env dc/myapp --from cm/myconfig
+
+oc edit configmap/myconfig
+
+# oc rollout latest dc/myapp 
+
+# oc create secret generic myappfilesec  --from-file myapp.sec 
+ 
+oc set volume dc/myapp --add  -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
+
+oc edit configmap/myappconf
 
 oc create cm myconf --from-literal key1=value1 
 
 oc get cm myconf
 
-oc get configmap/myconf -o json
+oc get configmap/myconf -o json >myconf.json
+
+# oc get configmap <configmap_name> -o json|yaml > <文件名>
 
 oc edit configmap/myconf
 
@@ -114,15 +143,15 @@ echo 'newpassword' | base64
 
 oc edit secret/mysecret
 
-oc create secret generic secret_name \    --from-file /home/demo/mysecret.txt
+# oc create secret generic secret_name \    --from-file /home/demo/mysecret.txt
 
-oc set env dc/mydcname \    --from secret/mysecret
+# oc set env dc/mydcname   --from secret/mysecret
 
  #disable 
  
 oc set volume dc/mydcname --add  -t secret -m /path/to/mount/volume \    --name myvol --secret-name mysecret
 
-oc set triggers dc/mydcname --from-config --remove
+# oc set triggers dc/mydcname --from-config --remove
 
  #re-enable 
  
@@ -130,9 +159,6 @@ oc set triggers dc/mydcname --from-config
 
 oc rollout latest mydcnam
 
-#exes-dd
-
-# [app-config]
 
  oc new-app --name myapp \    --build-env npm_config_registry=\ http://services.lab.example.com:8081/nexus/content/groups/nodejs \    http://services.lab.example.com/app-config 
 
@@ -142,7 +168,7 @@ $ oc set volume dc/myapp --add \    -t secret -m /opt/app-root/secure \    --nam
 
  oc rsh myapp-3-wzdbh env | grep APP_MSG 
  
-#exes-
+# [app-config]-start workwll
 
 
 # [design-container]
@@ -160,8 +186,6 @@ oc set env dc/hello --from configmap/appconfig
 oc rsh hello-3-ks1np env | grep APP_MSG 
 
 oc edit configmap/appconfig
-
-#exes-
 
 RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
 
@@ -191,7 +215,7 @@ oc set env dc/myapp \    --from configmap/myappconf
 oc set env dc/myap \    --from secret/myappfilesec
 oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    --name myvol --configmap-name myconf
 
- oc set volume dc/myap --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
+# oc set volume dc/myap --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
  
 oc set env dc/mydcname \    --from secret/mysecret
 
@@ -242,43 +266,13 @@ oc rollout latest mydcname
 
 oc new-project  source-build
 
-oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld --name hello
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld --name hello
  
  oc start-build --follow bc/hello 
  
 #2020-0523-start 可运行
 
-[app-config]
 
-oc new-project  chapter2-app-config 
-
-git clone https://github.com/woyaowoyao/DO288-apps
-
-DO288-apps/app-config
-
-oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config --name myapp 
-
-oc expose svc/myapp
-
-oc get route
-
-oc create configmap myconfig --from-literal APP_MSG='TEST'
-
-oc get -o json cm/myconfig
-
-oc set env dc/myapp --from cm/myconfig
-
-oc edit configmap/myconfig
-
- oc rollout latest dc/myapp 
-
-oc create secret generic myappfilesec  --from-file myapp.sec 
- 
-oc set volume dc/myapp --add  -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
-
-oc edit configmap/myappconf
-
-[app-config]
 
 # oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
 
