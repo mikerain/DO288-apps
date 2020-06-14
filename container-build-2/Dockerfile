@@ -23,8 +23,8 @@ ENV DOCROOT=/var/www/html \
 # Need this for installing Apache from classroom yum repo
 ADD training.repo /etc/yum.repos.d/training.repo
 
-RUN   yum install -y --setopt=tsflags=nodocs --noplugins httpd && \
-      yum clean all --noplugins -y && \
+RUN   yum install -y --disableplugin=subscription-manager --setopt=tsflags=nodocs --noplugins httpd && \
+      yum clean all --disableplugin=subscription-manager --noplugins -y && \
       echo "Hello from the httpd-parent container!" > ${DOCROOT}/index.html 
  
  RUN   sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf 

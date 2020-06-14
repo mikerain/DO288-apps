@@ -7,11 +7,11 @@ WORKDIR /opt/app-root
 # Copy the package.json to APP_ROOT 
 ONBUILD COPY package.json /opt/app-root
 # Install the dependencies 
-#ONBUILD RUN npm install
+ONBUILD RUN npm install
 # Copy the app source code to APP_ROOT 
-#ONBUILD COPY src /opt/app-root
+ONBUILD COPY src /opt/app-root
 # Start node server on port 3000 
-#CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]
 
 
 
