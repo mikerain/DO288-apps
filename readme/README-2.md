@@ -25,7 +25,7 @@ oc describe scc/restricted  oc describe scc/anyuid
 
 #  RUN chgrp -R 0 directory && \    chmod -R g=u directory
 
-# exes-onbuild-demo
+# [onbuild-demo]
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo --name onbuild-demo
 
@@ -133,7 +133,7 @@ $ oc set volume dc/myapp --add \    -t secret -m /opt/app-root/secure \    --nam
 #exes-
 
 
-# exes-design-container
+# [design-container]
 
 RUN chgrp -R 0 /opt/app-root && \ chmod -R g=u /opt/app-root 
 
@@ -153,7 +153,7 @@ oc edit configmap/appconfig
 
 RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
 
-# exes-app-config 
+# [app-config]
 
 oc new-app --name myap https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
 
@@ -269,7 +269,12 @@ oc edit configmap/myappconf
 [app-config]
 
 # oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
-[hello-swarm]  design-container
+
+# opentlc_workwell oc new-app --strategy=source -i redhat-openjdk18-openshift:1.4 https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
+
+[hello-swarm]  
+
+# design-container
 
 hello-java && cd hello-java
 
