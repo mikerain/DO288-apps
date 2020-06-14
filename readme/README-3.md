@@ -160,7 +160,7 @@ oc adm policy add-role-to-user system:image-builder user_name
 
 export TOKEN=$(oc whoami -t)
 
-docker login -u myuser -p $TOKEN myregistry.example.com
+# docker login -u myuser -p $TOKEN docker-registry.default.svc:5000 #myregistry.example.com
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
@@ -171,6 +171,12 @@ docker rmi -f $(docker images -aq)
 oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/hello-world-nginx --insecure 
  
 # opentlc oc import-image hello-worldn --confirm --from  docker-registry.default.svc:5000/chapter3/hello-world-nginx --insecure 
+
+# oc new-project image-stream
+
+# oc policy add-role-to-group -n chapter3 system:image-puller    system:serviceaccounts:image-stream #赋予当前项目组有下载的权限
+
+ # oc new-app --name hello -i chapter3/hello-worldn 
 
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 

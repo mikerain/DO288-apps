@@ -152,27 +152,21 @@ oc new-app --name jhost --build-env MAVEN_MIRROR_URL=http://services.lab.example
  vi A.java
  oc start-build jhost
  
-#exes-
+# oc set triggers bc/name --from-image=project/image:tag
 
-oc set triggers bc/name --from-image=project/image:tag
+# oc set triggers bc/name --from-image=project/image:tag --remove
 
-oc set triggers bc/name --from-image=project/image:tag --remove
+# oc set triggers bc/name --from-gitlab
 
-oc set triggers bc/name --from-gitlab
-
-oc set triggers bc/name --from-gitlab --remove
+# oc set triggers bc/name --from-gitlab --remove
 
 #exes--webhook
 
 oc new-app --name version --build-env MAVEN_MIRROR_URL=http://services.lab.example.com:8081/nexus/content/groups/training-java -i redhat-openjdk18-openshift http://services.lab.example.com/java-serverhost
 
-$ curl -X POST -k \
-
- https://master.lab.example.com:443/oapi/v1/namespaces/manage-builds/
+$ curl -X POST -k  https://master.lab.example.com:443/oapi/v1/namespaces/manage-builds/
  
 buildconfigs/version/webhooks/YuQyNTR6Moh38n6eor-D/generic
-
-#exes-
 
 #exes--trigger-builds
 
@@ -180,17 +174,15 @@ oc new-app --name trigger \ php~http://services.lab.example.com/trigger-builds
 
 oc describe bc/trigger | grep Triggered
 
-&&&&--
-
 cat push-image.sh 
 
 #!/bin/bash
 
 cd ~/DO288/labs/trigger-builds
 
-docker load -i php-70-rhel7-newer.tar.gz
+# docker load -i php-70-rhel7-newer.tar.gz
 
-docker tag     registry.lab.example.com:5000/rhscl/php-70-rhel7:7.0-5.14 \
+docker tag   registry.lab.example.com:5000/rhscl/php-70-rhel7:7.0-5.14 \
 	
     registry.lab.example.com:5000/rhscl/php-70-rhel7:latest
 	
