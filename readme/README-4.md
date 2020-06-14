@@ -199,25 +199,13 @@ oc import-image php:latest -n openshift
 # oc import-image docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest -n openshift
 #exes-
 
-# [post-commit] 重点
 
-oc set build-hook bc/name  --post-commit  --command  -- bundle exec rake test --verbose
 
 oc set build-hook bc/name --post-commit --script="curl http://api.com/user/${USER}"
 
 cd /DO288/labs/post-commit
  
-# @$$$$$$$$$$$$$$$$$$$$
- cat create-hook.sh 
-#!/bin/bash
 
-oc set build-hook bc/hook --post-commit --command -- \
-
-    bash -c "curl -s -S -i -X POST http://builds-for-managers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
-
-[student@workstation post-commit]$ 
-
-@$$$$$$$$$$$$$$$$$$$$
 
 oc describe bc/hook | grep Post
 
@@ -255,23 +243,30 @@ oc start-build simple -F
  
  https://master.lab.example.com:443/oapi/v1/namespaces/build-app/buildconfigs/simple/webhooks/HUKrcFVWQOmA3Dz8822k/generic
 
-#exes-
+# [post-commit] 重点
 
-oc set build-hook bc/name \    --post-commit \    --command \    -- bundle exec rake test --verbose
-
-@@@@@lab/post-commit
+oc set build-hook bc/name  --post-commit  --command  -- bundle exec rake test --verbose
 
 oc new-app --name hook \    php~http://services.lab.example.com/post-commit
 
-# oc new-app --name hook \    php~https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
+# oc new-app --name hook php~https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
 
-oc set build-hook bc/hook --post-commit --command -- \    
+# @$$$$$$$$$$$$$$$$$$$$
+ cat create-hook.sh 
+#!/bin/bash
 
-bash -c "curl -s -S -i -X POST http://builds-formanagers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\
+oc set build-hook bc/hook --post-commit --command -- \
 
- ${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
+    bash -c "curl -s -S -i -X POST http://builds-for-managers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
+
+oc set build-hook bc/hook --post-commit --command -- \
+    bash -c "curl -s -S -i -X POST http://hook-chapter4.apps.3e92.example.opentlc.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
+
+@$$$$$$$$$$$$$$$$$$$$
  
- oc start-build bc/hook -F 
+ # oc describe bc/hook | grep Post
+
+ # oc start-build bc/hook -F 
 
  oc set env bc/hook DEVELOPER="Your Name"
  
