@@ -9,8 +9,19 @@
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=apache-httpd --name apache-httpd #rhel7
 
 do288-w\todo-frontend-0
+
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
+cd DO288-apps-w/onbuild-demo/parent
+
+# sudo docker build -t nginx-parent .
+
+# 无法导入本地镜像 oc import-image nginx-parent --confirm  --from nginx-parent:latest -insecure 
+ docker tag    nginx-parent:latest   docker-registry-default.apps.3e92.example.opentlc.com:5000/openshift/nginx-parent:latest 
+ docker push docker-registry-default.apps.3e92.example.opentlc.com:5000/openshift/nginx-parent:latest
+
+# 无法导入本地镜像-》解决方法wokwell
+# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo/parent --name nginx-parent
 
 oc create serviceaccount apacheuser
 
