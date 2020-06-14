@@ -199,21 +199,15 @@ oc import-image php:latest -n openshift
 # oc import-image docker.io/redhatopenjdk/redhat-openjdk18-openshift:latest -n openshift
 #exes-
 
-# post-commit
+# [post-commit] 重点
 
-oc set build-hook bc/name \
-
- --post-commit \
- 
- --command \
- 
- -- bundle exec rake test --verbose
+oc set build-hook bc/name  --post-commit  --command  -- bundle exec rake test --verbose
 
 oc set build-hook bc/name --post-commit --script="curl http://api.com/user/${USER}"
 
 cd /DO288/labs/post-commit
  
-@$$$$$$$$$$$$$$$$$$$$
+# @$$$$$$$$$$$$$$$$$$$$
  cat create-hook.sh 
 #!/bin/bash
 
@@ -268,6 +262,8 @@ oc set build-hook bc/name \    --post-commit \    --command \    -- bundle exec 
 @@@@@lab/post-commit
 
 oc new-app --name hook \    php~http://services.lab.example.com/post-commit
+
+# oc new-app --name hook \    php~https://github.com/woyaowoyao/DO288-apps.git --context-dir=post-commit
 
 oc set build-hook bc/hook --post-commit --command -- \    
 
