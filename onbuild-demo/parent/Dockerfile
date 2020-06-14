@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/rhscl/nodejs-6-rhel7
 #centos/nodejs-8-centos7:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 EXPOSE 3000
-RUN mkdir -p /opt/app-root/ 
+RUN mkdir -p /opt/app-root/ && yum install node -y
 WORKDIR /opt/app-root
 # Copy the package.json to APP_ROOT 
 ONBUILD COPY package.json /opt/app-root
