@@ -4,6 +4,10 @@
 
 oc export is,bc,dc,svc,route,pvc --as-template test \    > ~/test-template.yaml
 
+# oc get --export is,bc,dc,svc,route,pvc  -o yaml  > test-template.yaml
+
+# oc get template/nginx-example -o json -n openshift >nginx-example-t.json
+
 grep kind: test-template.yaml
   
 diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clean.yaml \
