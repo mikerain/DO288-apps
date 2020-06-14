@@ -1,13 +1,9 @@
 
 # Charpter3
 
-#pull下载
+oc adm policy add-role-to-user system:registry developer  #pull下载
 
-oc adm policy add-role-to-user system:registry developer 
-
-#push上传
-
-oc adm policy add-role-to-user system:image-builder developer
+oc adm policy add-role-to-user system:image-builder developer #push上传
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
@@ -48,16 +44,14 @@ oc import-image openshift/jenkins:v3.10 --reference-policy='local' --from=docker
 
 oc import-image openshift/jenkins:v3.10 --from=docker.io/openshift/jenkins-2-centos7:v3.10 --confirm
 
-
 # oc adm policy add-role-to-user system:registry andrew
  
 # oc adm policy add-role-to-user system:image-builder andrew
 
-#exes-image-stream
 
-oc import-image hello-world --confirm  --from registry.lab.example.com:5000/hello-world-nginx --insecure
+# 重点实验 oc import-image hello-world --confirm  --from registry.lab.example.com:5000/hello-world-nginx --insecure
  
-docker login -u myuser -p $TOKEN docker-registry.default.svc:5000
+# docker login -u myuser -p $TOKEN docker-registry.default.svc:5000
 
 docker pull xxxxx 
 
@@ -85,7 +79,7 @@ oc login -u developer -p redhat https://master.lab.example.com
  
 #!/bin/bash
 
- # oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image
+ # oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image #跨项目权限
  
  cat registry-deny.sh 
  
@@ -149,6 +143,9 @@ sudo systemctl status docker
  docker run -d --name test \    workstation.lab.example.com:5000/rhel7-sleep 
  
 # Importance]
+
+# oc new-app --name hello-world-nginx  https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-world-nginx 
+
 system:registry 
 
 This role allows a user to pull images from the internal registry.
@@ -173,6 +170,8 @@ docker rmi -f $(docker images -aq)
 
 oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/hello-world-nginx --insecure 
  
+# opentlc oc import-image hello-worldn --confirm --from  docker-registry.default.svc:5000/chapter3/hello-world-nginx --insecure 
+
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 
 sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
