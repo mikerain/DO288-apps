@@ -120,7 +120,7 @@ oc rollout latest mydcnam
 
 #exes-dd
 
-# exes-app-config 
+# [app-config]
 
  oc new-app --name myapp \    --build-env npm_config_registry=\ http://services.lab.example.com:8081/nexus/content/groups/nodejs \    http://services.lab.example.com/app-config 
 
@@ -270,7 +270,7 @@ oc edit configmap/myappconf
 
 # oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
 
-# opentlc_workwell oc new-app --strategy=source -i redhat-openjdk18-openshift:1.4 https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
+# opentlc_workwell oc new-app --strategy=source -i redhat-openjdk18-openshift:1.4 https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm  #todo 需要设定数据库镜像变量
 
 [hello-swarm]  
 

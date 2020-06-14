@@ -1,4 +1,5 @@
-FROM centos/nodejs-8-centos7:latest 
+FROM registry.access.redhat.com/rhscl/nodejs-6-rhel7
+#centos/nodejs-8-centos7:latest 
 #FROM registry.access.redhat.com/rhel7:7.3
 EXPOSE 3000
 RUN mkdir -p /opt/app-root/ 
