@@ -137,10 +137,11 @@ oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.tes
 
 # oc new-app --name info --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=rhel7-info
 
+
 # error: chmod: changing permissions of '/tmp/info.sh': Operation not permitted->
 切换为管理员登录 再oc adm policy add-scc-to-user anyuid  -z default -n chapter1
 
-
+oc new-app --name info2 --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=ubi-info
 
 #ERROR:build error: Failed to push image: unauthorized: unable to validate token-> 重启虚拟机
 
