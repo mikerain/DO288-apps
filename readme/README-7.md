@@ -38,7 +38,7 @@ oc set triggers dc/name --auto
 
 oc logs --version=1 dc/name
 
-oc scale dc/name --replicas=3
+# oc scale dc/name --replicas=3
 
 charpter7---》
 
