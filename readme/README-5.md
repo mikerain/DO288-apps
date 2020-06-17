@@ -1,8 +1,6 @@
 
 # Chapter5
 
-#work 考试
-
 [s2i-scripts]
 
 sudo yum install source-to-image 
@@ -42,7 +40,6 @@ oc import-image my-ruby --from=docker.io/openshift/ruby-20-centos7 --confirm
 
 # oc new-app --name my2hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 
-# oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 vi assemble
 #@@@@考试
 ######## CUSTOMIZATION START HERE ############
@@ -150,6 +147,8 @@ PDF 202 ，数字页码 184，实验 自定义 s2i 脚本覆盖默认
 
 1. 需要build 一个应用程序，这个应用程序的源码地址 http://services.lab.example.com/s2i-scripts
 
+# oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
+
 2. 这个源码中包含了自定义的 s2i 脚本 和 index.html 文件
 
 3. 使用 rhscl/httpd-24-rhel7 builder image 构建 应用程序的时候，当应用程序构建完毕，
@@ -163,3 +162,16 @@ hello world httpd
 5. 这个应用程序应该在 app3 project 中
 
 6. 这个应用程序的名称 应该是 test3
+
+
+docker inspect \    --format='{{ index .Config.Labels "io.openshift.s2i.scripts-url"}}' \    rhscl/php-70-rhel7 
+
+skopeo inspect \    docker://myregistry.example.com/rhscl/php-70-rhel7 \    | grep io.openshift.s2i.scripts-url        
+
+
+#!/bin/sh -e
+# Stream the .m2 folder tar archive to stdout 
+if [ -d ${HOME}/.m2 ]; then    pushd ${HOME} > /dev/null    tar cf - .m2    popd > /dev/null fi
+
+# Restore the .m2 folder ...
+ if [ -d /tmp/artifacts/.m2 ]; then  echo "---> Restoring maven artifacts..."  mv /tmp/artifacts/.m2 ${HOME}/ fi 

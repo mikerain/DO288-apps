@@ -5,6 +5,9 @@
 考试重点：创建 post commit hook；重点实验 PDF 180 页=阿拉伯数字162页
 
 当build结束的时候，执行一个命令，给用户发送一个通知，考试内容与 这个实验类似
+
+# oc set build-hook bc/name --post-commit \    --script="curl http://api.com/user/${USER}"
+
 ======================================================================
 
 # [java-serverhost]   manage-builds && oc new-project chapter4 
@@ -14,8 +17,6 @@ cd java-serverhost
 oc import-image redhat-openjdk18-openshift --confirm  --reference-policy='local' --from docker.io/redhatopenjdk/redhat-openjdk18-openshift --insecure -n openshift
 
 #Work oc new-app  --name jhost -i redhat-openjdk18-openshift:1.2 https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost
-
-oc new-app --name jhost2 -i fuse7-java-openshift:1.1 https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost#failed no subscriber
 
 oc new-app --name jhost3 -i  wildfly:9.0  https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost 
 
@@ -39,11 +40,10 @@ cd /root/DO288-apps/trigger-builds
 
 # docker load -i /docker-images/php-70-rhel7-newer.tar.gz
 
-docker tag  registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14 \
-
-docker-registry-default.apps.os311.test.it.example.com:5000/rhscl/php-70-rhel7:latest
+# docker tag  registry.access.redhat.com/rhscl/php-70-rhel7:7.0-5.14 docker-registry-default.apps.os311.test.it.example.com:5000/rhscl/php-70-rhel7:latest
 	
-docker push   docker-registry-default.apps.os311.test.it.example.com:5000/rhscl/php-70-rhel7:latest
+# 上传镜像
+# docker push   docker-registry-default.apps.os311.test.it.example.com:5000/rhscl/php-70-rhel7:latest
 	
 sh push-image.sh
 
@@ -163,7 +163,7 @@ oc set build-hook bc/hook --post-commit --command -- \
 
     bash -c "curl -s -S -i -X POST http://builds-for-managers.apps.lab.example.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
 
-oc set build-hook bc/hook --post-commit --command -- \
+# oc set build-hook bc/hook --post-commit --command -- \
     bash -c "curl -s -S -i -X POST http://hook-chapter4.apps.3e92.example.opentlc.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
 
 @$$$$$$$$$$$$$$$$$$$$
