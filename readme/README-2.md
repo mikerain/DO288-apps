@@ -91,40 +91,8 @@ git commit -a -m "fix"
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build-2 --name container-build3
 oc delete project container-build
 
-# [container-build]-end
-
-# [app-config]-start workwe ll
-
-git clone https://github.com/woyaowoyao/DO288-apps
-
-DO288-apps/app-config
-
-oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config --name myapp 
-
-oc expose svc/myapp
-
-oc get route
-
-# oc create configmap myconfig --from-literal APP_MSG='TEST'
-
-oc get -o json cm/myconfig
-
-# oc set env dc/myapp --from cm/myconfig
-
-oc edit configmap/myconfig
-
-# oc rollout latest dc/myapp 
-
-# oc create secret generic myappfilesec  --from-file myapp.sec 
+# [container-build]-en
  
-oc set volume dc/myapp --add  -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
-
-oc edit configmap/myappconf
-
-oc create cm myconf --from-literal key1=value1 
-
-oc get cm myconf
-
 oc get configmap/myconf -o json >myconf.json
 
 # oc get configmap <configmap_name> -o json|yaml > <文件名>
@@ -144,19 +112,14 @@ oc edit secret/mysecret
 # oc create secret generic secret_name \    --from-file /home/demo/mysecret.txt
 
 # oc set env dc/mydcname   --from secret/mysecret
-
- #disable 
  
 oc set volume dc/mydcname --add  -t secret -m /path/to/mount/volume \    --name myvol --secret-name mysecret
 
 # oc set triggers dc/mydcname --from-config --remove
 
- #re-enable 
- 
 oc set triggers dc/mydcname --from-config
 
 oc rollout latest mydcnam
-
 
  oc new-app --name myapp \    --build-env npm_config_registry=\ http://services.lab.example.com:8081/nexus/content/groups/nodejs \    http://services.lab.example.com/app-config 
 
@@ -188,41 +151,7 @@ RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd
 
 # [app-config]
 
-oc new-app --name myap https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
-
 oc new-app --name myap2 centos/nodejs-8-centos7~https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
-
-$ oc create configmap myappconf    --from-literal APP_MSG="Test Message" 
-
-oc get -o yaml configmap/myappconf
-
-oc describe configmap/myappconf 
-
-oc create secret generic myappfilesec --from-file /root/redhat-do288/do288-apps/app-config/myapp.sec 
-
-oc create secret generic myappfilesec --from-file /root/github/DO288-apps/app-config//myapp.sec
-
-oc create secret generic secret_name \    --from-file /home/demo/mysecret.txt
-
-oc create configmap config_map_name \    --from-literal key1=value1 \    --from-literal key
-
-oc create configmap config_map_name \    --from-file /home/demo/conf.tx
-
-oc set env dc/myapp \    --from configmap/myappconf
-oc set env dc/myap \    --from secret/myappfilesec
-oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    --name myvol --configmap-name myconf
-
-# oc set volume dc/myap --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
- 
-oc set env dc/mydcname \    --from secret/mysecret
-
-#暂停触发
-oc set triggers dc/mydcname --from-config --remove
-
-#启用触发
-oc set triggers dc/mydcname --from-config
-
-$ oc rollout latest dc/hello
 
 skopeo copy --dest-tls-verify=false oci:myimage docker://registry.example.com/myimage
 
@@ -245,14 +174,6 @@ docker login -u myuser -p $TOKEN myregistry.example.com
 skopeo copy --creds=myuser:$TOKEN docker://myregistry.example.com/...
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
-
-
-oc set volume dc/mydcname --add \
- -t secret -m /path/to/mount/volume \    --name myvol --secret-name mysecret
- 
-oc set triggers dc/mydcname --from-config --remove
-
-oc set triggers dc/mydcname --from-config
 
 oc rollout latest mydcname
 
@@ -278,20 +199,10 @@ hello-java && cd hello-java
 
 oc new-project chapter2-hello-swarm-design-container
 
-# oc new-app --name hello https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
+# oc new-app --name hellojava https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java 
 
 oc logs -f bc/hello
 
-oc get pods 
-
-crul http://hello-chapter2-hello-swarm-design-container.apps.os311.test.it.example.com/api/hello
-
-# oc create configmap appconfig --from-literal APP_MSG='D288 HELL'
-
-# oc set env dc/hello --from cm/appconfig
-
-# oc rsh hello-3-ks1np env | grep APP_MSG 
- 
 path= api/hello
 
 http://hello-chapter2-hello-swarm-design-container.apps.e380.example.opentlc.com/api/hello
@@ -313,3 +224,45 @@ http://hello-chapter2-hello-swarm-design-container.apps.e380.example.opentlc.com
 
 请把用户自己创建的 configmap 导出为 cm.json | cm.yaml ；导出 cm 建议用命令行，防止评分脚本判定问题
 oc get configmap <configmap_name> -o json|yaml > <文件名>
+
+# oc new-app --name myap https://github.com/woyaowoyao/DO288-apps.git --context-dir=app-config
+
+# oc create configmap myappconf    --from-literal APP_MSG="Test Message" 
+
+# oc set env dc/hello --from cm/appconfig
+
+# oc rsh hello-3-ks1np env | grep APP_MSG 
+
+oc get -o yaml configmap/myappconf
+
+oc describe configmap/myappconf 
+
+oc create secret generic myappfilesec --from-file /root/redhat-do288/do288-apps/app-config/myapp.sec 
+
+oc create configmap config_map_name \    --from-literal key1=value1 \    --from-literal key
+
+oc create configmap config_map_name \    --from-file /home/demo/conf.tx
+
+oc set env dc/myapp \    --from configmap/myappconf
+oc set env dc/myap \    --from secret/myappfilesec
+oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    --name myvol --configmap-name myconf
+
+# oc set volume dc/myap --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec 
+ 
+oc set env dc/mydcname \    --from secret/mysecret
+
+#暂停触发
+oc set triggers dc/mydcname --from-config --remove
+
+#启用触发
+oc set triggers dc/mydcname --from-config
+
+$ oc rollout latest dc/hello
+
+#暂停触发
+oc set triggers dc/mydcname --from-config --remove
+
+#启用触发
+oc set triggers dc/mydcname --from-config
+
+$ oc rollout latest dc/hello
