@@ -161,7 +161,7 @@ oc new-app myis~<源码地址> #OpenShift 进行应用程序 build
 
  # oc new-app --name hello -i chapter3/hello-worldn 
 
- #skopeo copy --dest-tls-verify=false \    --dest-creds=developer:$TOKEN \ 
+ # skopeo copy --dest-tls-verify=false \    --dest-creds=developer:$TOKEN \ 
   oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-registry-default.apps.lab.example.com/common/rhel7-info
  
 ======================================================================
