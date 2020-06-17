@@ -83,7 +83,6 @@ oc login -u admin -p redhat
  
 cat push-image.sh 
  
-
 # skopeo copy --dest-tls-verify=false \
     --dest-creds=developer:$TOKEN \
     oci:/home/student/DO288/labs/expose-image/php-info \
