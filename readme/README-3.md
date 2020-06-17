@@ -1,9 +1,14 @@
 
 # Charpter3
 
+oc project default
+
+ export TOKEN=$(oc whoami -t)
+
 oc adm policy add-role-to-user system:registry developer  #pull下载
 
 oc adm policy add-role-to-user system:image-builder developer #push上传
+
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
@@ -30,11 +35,6 @@ oc import-image myis --confirm --insecure  --from registry.example.com:5000/myim
  
 #  oc import-image openjdk18-openshift --confirm --insecure --from docker.io/sibdocker/openjdk18
 
-sudo systemctl start docker-distribution
-
-sudo systemctl status docker-distribution
-
-sudo systemctl enable docker-distribution 
   
 #镜像导入到本地私有镜像仓库中--reference-policy='local'
 
@@ -48,7 +48,6 @@ oc import-image openshift/jenkins:v3.10 --from=docker.io/openshift/jenkins-2-cen
  
 # oc adm policy add-role-to-user system:image-builder andrew
 
-
 # 重点实验 oc import-image hello-world --confirm  --from registry.lab.example.com:5000/hello-world-nginx --insecure
  
 # docker login -u myuser -p $TOKEN docker-registry.default.svc:5000
@@ -57,9 +56,7 @@ docker pull xxxxx
 
 oc new-app --name hello -i common/hello-world
 
-#exes-
-
-#exes- expose-image
+[expose-image]
 
 oc login -u admin -p redhat  https://master.lab.example.com
 
@@ -75,38 +72,22 @@ oc adm policy add-role-to-user system:image-builder developer
 
 oc login -u developer -p redhat https://master.lab.example.com
 
- cat project-grant.sh
- 
-#!/bin/bash
+cat project-grant.sh
+
 
  # oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image #跨项目权限
  
- cat registry-deny.sh 
- 
-#!/bin/bash
+cat registry-deny.sh 
 
 oc login -u admin -p redhat
-
-oc project default
-
-oc adm policy remove-role-from-user system:registry developer
-
-oc adm policy remove-role-from-user system:image-builder developer
-oc login -u developer -p redhat
-
- export TOKEN=$(oc whoami -t)
  
- cat push-image.sh 
+cat push-image.sh 
  
-#!/bin/bash
 
 # skopeo copy --dest-tls-verify=false \
     --dest-creds=developer:$TOKEN \
     oci:/home/student/DO288/labs/expose-image/php-info \
     docker://docker-registry-default.apps.lab.example.com/common/php-info
-
-
-
 
 # sudo yum install docker-distribution skopeo 
  
@@ -128,7 +109,6 @@ find /var/lib/registry/ -name rhel7-sleep
   
 sudo systemctl status docker 
   
-  
 oc new-app --name sleep \    --docker-image workstation.lab.example.com:5000/rhel7-sleep 
   
 As root user, open the /etc/sysconfig/docker file with a text editor and locate the following line:
@@ -140,23 +120,15 @@ INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000 --insecurer
 sudo systemctl restart docker
 sudo systemctl status docker 
 
- docker run -d --name test \    workstation.lab.example.com:5000/rhel7-sleep 
+docker run -d --name test \    workstation.lab.example.com:5000/rhel7-sleep 
  
-# Importance]
+# Importance
 
 # oc new-app --name hello-world-nginx  https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-world-nginx 
 
 system:registry 
 
 This role allows a user to pull images from the internal registry.
-
-system:image-builder 
-
-This role allows a user to push images to the internal registry.
-
-oc adm policy add-role-to-user system:registry user_name 
-
-oc adm policy add-role-to-user system:image-builder user_name
 
 export TOKEN=$(oc whoami -t)
 
@@ -181,10 +153,6 @@ oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 
 sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
-
-sudo systemctl restart docker 
-
-sudo systemctl status docker 
 
 # Importance
 

@@ -35,13 +35,7 @@ http://services.lab.example.com/nodejs-helloworld
 
 oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
 
-oc new-app --name hello  --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
-
 oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
-
-#http://services.lab.example.com:8081/nexus/content/groups/nodejs
-
-http://services.lab.example.com/nodejs-helloworld 
 
  python -m json.tool nodejs-helloworld/package.json
 
@@ -52,8 +46,6 @@ http://services.lab.example.com/nodejs-helloworld
 oc import-image tomcat:8.5-alpine --from docker.io/tomcat:8.5-alpine --confirm
  
 #进行new-app //上一步导入镜像到project onbuild-demo
-
-oc new-app -i onbuild-demo/tomcat:8.5-alpine --name my-tomcat-app
 
 oc new-app -i chapter2/tomcat:8.5-alpine --name my-tomcat-app
 
@@ -98,27 +90,18 @@ oc new-app --name='blue' --labels=name="blue" php~https://github.com/redhat-gpte
 
 oc import-image myis --confirm \    --from registry.acme.example.com:5000/acme/awesome --insecure
 
-
 <deploy-image 
-
-oc new-project hello
-
-oc new-app --name ahttpd httpd:2.4
 
 oc new-project common
  
 oc import-image apache-httpd --confirm \    --from docker-registry.default.svc:5000/hello/ahttpd --insecure #local-vm
 
-oc import-image apache-httpd --confirm \    --from registry.lab.example.com:5000/do288/apache-httpd --insecure 
- 
+oc new-app --name ahttpd httpd:2.4
+
 [docker-build]
 
 student@workstation ~]$ lab docker-build setup
 
-git clone http://services.lab.example.com/rhel7-echo
-
-lab docker-build setup
- 
 git clone http://services.lab.example.com/rhel7-echo
 
 cat ~/rhel7-echo/Dockerfile
@@ -180,15 +163,11 @@ oc rsh hello-1-89mhn ps ax
 oc rsh -t hello-1-89mhn
 
  oc policy add-role-to-user view system:serviceaccount:top-secret:robot
- 
- <--import  import-->
 
 oc get templates -n openshift | grep php | grep mysql 
  
 oc get templates/cakephp-mysql-example -o yaml >cakephp-mysql-example.yaml -n openshift
  
-#create-app.sh template
-
 oc new-app --template openshift/cakephp-mysql-example -p NAME=quotesapi   -p APPLICATION_DOMAIN=quotes-do288-cha1.apps.os311.test.it.example.com -p SOURCE_REPOSITORY_URL=http://gogs-cicd.apps.os311.test.it.example.com/root/do288-apps  -p CONTEXT_DIR=quotes -p DATABASE_SERVICE_NAME=quotesdb  -p DATABASE_USER=user1 -p DATABASE_PASSWORD=mypa55   --name quotes
   
 cd /C/cloud/openshift/servers/test-files/rhoar-getting-started/origin-examples/quickstarts
@@ -205,30 +184,18 @@ oc rsh quotesapi-1-5zncm bash -c \    'curl $DATABASE_SERVICE_NAME:3306'
 
 mysql -h 110.110.110.110 -uroot -p abcd123
 
-create database name; 创建数据库
-
-use databasename; 选择数据库
-
-drop database name 直接删除数据库，不提醒
-
-show tables; 显示表
-
-describe tablename; 表的详细描述
-
-select中加上distinct去除重复字段
-
-mysqladmin drop database name 删除数据库前，有提示。
+create database name; 创建数据库use databasename; 选择数据库drop database name 直接删除数据库，不提醒
+show tables; 显示表describe tablename; 表的详细描述mysqladmin drop database name 删除数据库前，有提示。
 
 oc cp ./DO288/labs/build-template/quote.sql \    quotesdb-1-hh2g9:/tmp/quote.sql
  
 oc rsh -t quotesdb-1-hh2g9 
  
 mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/quote.sql 
-
  
- oc start-build --follow bc/hello 
+oc start-build --follow bc/hello 
 
- oc adm policy add-scc-to-user anyuid -z apacheuser
+oc adm policy add-scc-to-user anyuid -z apacheuser
 
 oc set env dc/mydcname     --from configmap/myconf
 
@@ -243,11 +210,6 @@ oc set triggers dc/mydcname --from-config --remove
 oc set triggers dc/mydcname --from-config
 
 oc rollout latest mydcname
-
-#exes-build-template
-cat ~/DO288/labs/build-template/create-app.sh 
-
-oc new-app --template common/php-mysql-ephemeral \  -p NAME=quotesapi \  -p APPLICATION_DOMAIN=quote.apps.lab.example.com \  -p SOURCE_REPOSITORY_URL=http://services.lab.example.com/quotes \  -p DATABASE_SERVICE_NAME=quotesdb \  -p DATABASE_USER=user1 \  -p DATABASE_PASSWORD=mypa55 \  --name quotes
 
 oc describe svc quotesdb | grep Endpoints 
 

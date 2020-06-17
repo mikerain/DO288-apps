@@ -33,7 +33,6 @@ oc patch dc/demo-app --patch \    '{"spec":{"template":{"spec":{"serviceAccountN
 
 oc describe scc/restricted  oc describe scc/anyuid
 
-
 #  RUN chgrp -R 0 directory && \    chmod -R g=u directory
 
 # [onbuild-demo]
@@ -95,7 +94,6 @@ oc delete project container-build
 # [container-build]-end
 
 # [app-config]-start workwe ll
-
 
 git clone https://github.com/woyaowoyao/DO288-apps
 
@@ -258,7 +256,6 @@ oc set triggers dc/mydcname --from-config
 
 oc rollout latest mydcname
 
-
 [source-build]
 
 oc new-project  source-build
@@ -268,8 +265,6 @@ oc new-project  source-build
  oc start-build --follow bc/hello 
  
 #2020-0523-start 可运行
-
-
 
 # oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
 
