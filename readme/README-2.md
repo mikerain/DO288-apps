@@ -297,3 +297,19 @@ path= api/hello
 http://hello-chapter2-hello-swarm-design-container.apps.e380.example.opentlc.com/api/hello
 
 [hello-swarm]
+
+# 重点：优化下面 Dockerfile，并满足以下要求： 重点实验
+======================================================================
+
+1. 请保证这个 Dockerfile 创建的容器尽量少的层
+
+2. 请保证这个 Dockerfile 在 OpenShift 中可以 创建 pod 并保证 pod 正常执行
+
+3. 当这个 Dockerfile 创建的 image 被其他用户 引用的时候，应该要执行 将 src 目录下的内容，拷贝到 /var/www/html 目录
+
+# 重点： 创建一个应用程序，并且对这个应用程序进行变量注入，考试只需要对应用程序通过 configmap 注入变量，建议通过web console 创建，可以不用记命令
+
+参考实验：PDF 102 页练习
+
+请把用户自己创建的 configmap 导出为 cm.json | cm.yaml ；导出 cm 建议用命令行，防止评分脚本判定问题
+oc get configmap <configmap_name> -o json|yaml > <文件名>

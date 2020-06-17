@@ -25,7 +25,11 @@ curl -i http://probes.apps.lab.example.com/ready
 
 curl http://probes.apps.lab.example.com/flip?op=kill
 
-#exes-
+
+第七章：
+======================================================================
+# 重点：创建健康检查 liveness 或 readness 重点实验 PDF 269 页= 阿拉伯数字 251 页
+
 oc rollout latest dc/name
 
 oc rollout history dc/name

@@ -74,7 +74,6 @@ oc login -u developer -p redhat https://master.lab.example.com
 
 cat project-grant.sh
 
-
  # oc policy add-role-to-group system:image-puller system:serviceaccounts:expose-image #跨项目权限
  
 cat registry-deny.sh 
@@ -155,3 +154,20 @@ sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
 
 # Importance
 
+# 重点 ======================================================================
+
+创建 image strem；重点实验 PDF 141 页=阿拉伯数字123页
+
+1. 有一个xxx的源码，目前需要用户自己创建一个名为 myis 的image stream 
+
+2. 这个 myis 的 image stream 应该包含 xxx 源码必要的运行环境
+
+3. 当时用 myis 部署 xxx 源码的应用时，应该可以部署成功
+
+4. 当应用部署成功之后，应该 传递 app1=100 的变量到应用程序中
+
+docker-registry-cli <镜像仓库地址> list all < 如果是 https 需要加 ssl>          # 这个命令可以查看镜像仓库的所有镜像
+oc import-image myis --confirm --from <镜像仓库地址>:5000/<镜像名称> --insecure # 找到对应的源码运行环境镜像，把这个镜像创建称为 image stream
+oc new-app myis~<源码地址> #OpenShift 进行应用程序 build
+最后一步，图形化创建 configmap 注入 应用程序
+======================================================================

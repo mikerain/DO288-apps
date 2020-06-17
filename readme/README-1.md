@@ -215,3 +215,21 @@ oc describe svc quotesdb | grep Endpoints
 
 oc start-build hello -F
 
+# 重点-实验：PDF 58 页（阿拉伯数字 40 页）比较重要，必须要完成
+======================================================================
+
+1. 创建 名称为 app1 的应用程序
+
+2. 这个应用程序创建完毕后，应该可以通过 http://hello.apps.lab.example.com 地址访问
+
+3. 这个应用程序build时候需要的依赖在 http://services.lab.example.com:8081/nexus/content/groups/nodejs 传递依赖的关键字 npm_config_registry
+
+4. 这个应用程序应该运行在 projecta 中
+
+5. 如果应用无法正常build，提供了一个json文件检查工具 可以通过 python -m json.tool filename.json 使用
+
+6. 本次build 需要使用的源码 http://services.lab.example.com/nodejs-helloworld
+
+oc new-app --name hello \    
+--build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs \   
+ http://hello.lab.example.com/app-config 

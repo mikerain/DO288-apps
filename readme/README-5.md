@@ -142,3 +142,24 @@ cd custom-s2i
 
 # oc new-app --name greet \    s2i-do288-go~http://services.lab.example.com/go-hello 
 
+s2i 流程
+https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html#creating-images-s2i
+
+# 重点-实验
+PDF 202 ，数字页码 184，实验 自定义 s2i 脚本覆盖默认
+
+1. 需要build 一个应用程序，这个应用程序的源码地址 http://services.lab.example.com/s2i-scripts
+
+2. 这个源码中包含了自定义的 s2i 脚本 和 index.html 文件
+
+3. 使用 rhscl/httpd-24-rhel7 builder image 构建 应用程序的时候，当应用程序构建完毕，
+   当用户访问 http://app3.apps.lab.example.com的时候可以看到 Hello Class! DO288 rocks!!! 输出
+
+4. 当应用构建完毕访问 http://app3.apps.lab.example.com/a.html 应该可以看到这些输出 
+hello world httpd
+2020-03-21  11:05 
+03-21-2020  11:05（这个地方应该显示的是你构建应用程序的时间） 
+
+5. 这个应用程序应该在 app3 project 中
+
+6. 这个应用程序的名称 应该是 test3
