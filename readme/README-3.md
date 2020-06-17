@@ -1,9 +1,7 @@
 
 # Charpter3
 
-oc project default
-
- export TOKEN=$(oc whoami -t)
+export TOKEN=$(oc whoami -t)
 
 oc adm policy add-role-to-user system:registry developer  #pull下载
 
@@ -54,9 +52,8 @@ oc new-app --name hello -i common/hello-world
 [expose-image]
 
 oc login -u admin -p redhat  https://master.lab.example.com
-
- registry-grant.sh
  
+
 #!/bin/bash
 
 oc project default
