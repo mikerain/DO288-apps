@@ -9,12 +9,10 @@ oc adm policy add-role-to-user system:registry developer  #pull下载
 
 oc adm policy add-role-to-user system:image-builder developer #push上传
 
-
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
 skopeo copy --dest-tls-verify=false \    --dest-creds=developer:$TOKEN \ 
-  
-oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-registry-default.apps.lab.example.com/common/rhel7-info
+  oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-registry-default.apps.lab.example.com/common/rhel7-info
  
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
  
@@ -27,15 +25,10 @@ INSECURE_REGISTRY='--insecure-registry registry.lab.example.com:5000' INSECURE_R
 
 sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
 
-sudo systemctl status docker 
-
-sudo systemctl start docker 
-
 oc import-image myis --confirm --insecure  --from registry.example.com:5000/myimage
  
 #  oc import-image openjdk18-openshift --confirm --insecure --from docker.io/sibdocker/openjdk18
 
-  
 #镜像导入到本地私有镜像仓库中--reference-policy='local'
 
 oc import-image openshift/jenkins:v3.10 --reference-policy='local' --from=docker.io/openshift/jenkins-2-centos7:v3.10 --confirm
@@ -50,7 +43,9 @@ oc import-image openshift/jenkins:v3.10 --from=docker.io/openshift/jenkins-2-cen
 
 # 重点实验 oc import-image hello-world --confirm  --from registry.lab.example.com:5000/hello-world-nginx --insecure
  
-# docker login -u myuser -p $TOKEN docker-registry.default.svc:5000
+ export TOKEN=$(oc whoami -t)
+
+# docker login -u andrew -p $TOKEN docker-registry.default.svc:5000
 
 docker pull xxxxx 
 
@@ -151,8 +146,6 @@ oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 
 sudo cp ~/DO288/solutions/expose-registry/docker \    /etc/sysconfig/docker
-
-# Importance
 
 # 重点 ======================================================================
 

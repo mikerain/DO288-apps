@@ -1,14 +1,6 @@
 # Chapter2
 
-# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-frontend-0 --name todo-frontend-0 #rhel7
-
-# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-frontend --name todo-frontend  #ubi8
-
-# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-java --name hello-java  #ubi8
-
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=apache-httpd --name apache-httpd #rhel7
-
-do288-w\todo-frontend-0
 
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
@@ -48,17 +40,13 @@ RUN sed -i "s/listen 80/listen 8080/g" /etc/nginx.conf
 
 RUN chgrp -R 0 /var/opt/rh/rh-nginx18 && chmod -R g=u /var/opt/rh/rh-nginx18
 
-#exes-
-
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=hello-world-nginx --name hello-world-nginx
 
 # [container-build]-start
 
 git clone \    http://services.lab.example.com/container-build
 
-oc new-project container-build
-
-  oc new-app --name hello \    http://services.lab.example.com/container-build \    --insecure-registry 
+oc new-app --name hello \    http://services.lab.example.com/container-build \    --insecure-registry 
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build --name container-build#
 
@@ -78,9 +66,9 @@ oc edit dc/hell terminationGracePeriodSeconds: 30
 
  oc delete serviceaccount apacheuser 
  
-RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
+# RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
 
-RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
+# RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \    chmod -R g=u /var/log/httpd /var/run/httpd
 
 USER 1001
 
@@ -265,4 +253,4 @@ oc set triggers dc/mydcname --from-config --remove
 #启用触发
 oc set triggers dc/mydcname --from-config
 
-$ oc rollout latest dc/hello
+oc rollout latest dc/hello
