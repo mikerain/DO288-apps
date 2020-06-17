@@ -9,9 +9,7 @@ oc adm policy add-role-to-user system:image-builder developer #push上传
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
-skopeo copy --dest-tls-verify=false \    --dest-creds=developer:$TOKEN \ 
-  oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-registry-default.apps.lab.example.com/common/rhel7-info
- 
+
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
  
  vi /etc/sysconfig/docker 
@@ -132,13 +130,7 @@ docker rmi -f $(docker images -aq)
 
 oc import-image hello-world --confirm \    --from registry.lab.example.com:5000/hello-world-nginx --insecure 
  
-# opentlc oc import-image hello-worldn --confirm --from  docker-registry.default.svc:5000/chapter3/hello-world-nginx --insecure 
 
-# oc new-project image-stream
-
-# oc policy add-role-to-group -n chapter3 system:image-puller    system:serviceaccounts:image-stream #赋予当前项目组有下载的权限
-
- # oc new-app --name hello -i chapter3/hello-worldn 
 
 grep INSECURE_REGISTRY \    ~/DO288/solutions/expose-registry/docker 
 
@@ -160,4 +152,16 @@ docker-registry-cli <镜像仓库地址> list all < 如果是 https 需要加 ss
 oc import-image myis --confirm --from <镜像仓库地址>:5000/<镜像名称> --insecure # 找到对应的源码运行环境镜像，把这个镜像创建称为 image stream
 oc new-app myis~<源码地址> #OpenShift 进行应用程序 build
 最后一步，图形化创建 configmap 注入 应用程序
+
+# opentlc oc import-image hello-worldn --confirm --from  docker-registry.default.svc:5000/chapter3/hello-world-nginx --insecure 
+
+# oc new-project image-stream
+
+# oc policy add-role-to-group -n chapter3 system:image-puller    system:serviceaccounts:image-stream #赋予当前项目组有下载的权限
+
+ # oc new-app --name hello -i chapter3/hello-worldn 
+
+ #skopeo copy --dest-tls-verify=false \    --dest-creds=developer:$TOKEN \ 
+  oci:/home/student/DO288/labs/expose-registry/rhel7-info \    docker://docker-registry-default.apps.lab.example.com/common/rhel7-info
+ 
 ======================================================================
