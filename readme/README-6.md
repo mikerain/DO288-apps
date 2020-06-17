@@ -9,6 +9,7 @@ oc export is,bc,dc,svc,route,pvc --as-template test \    > ~/test-template.yaml
 # oc get template/nginx-example -o json -n openshift >nginx-example-t.json
 
 # cd create-template
+
 oc create -f quotes-template.yaml 
 
 grep kind: test-template.yaml
