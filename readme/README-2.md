@@ -170,7 +170,6 @@ $ oc set volume dc/myapp --add \    -t secret -m /opt/app-root/secure \    --nam
  
 # [app-config]-start workwll
 
-
 # [design-container]
 
 RUN chgrp -R 0 /opt/app-root && \ chmod -R g=u /opt/app-root 
@@ -220,11 +219,9 @@ oc set volume dc/mydcname --add \    -t configmap -m /path/to/mount/volume \    
 oc set env dc/mydcname \    --from secret/mysecret
 
 #暂停触发
-
 oc set triggers dc/mydcname --from-config --remove
 
 #启用触发
-
 oc set triggers dc/mydcname --from-config
 
 $ oc rollout latest dc/hello
