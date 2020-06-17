@@ -33,8 +33,6 @@ oc new-app --name hello     --build-env npm_config_registry=http://services.lab.
 
 http://services.lab.example.com/nodejs-helloworld
 
-oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
-
 oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps.git --context-dir=nodejs-helloworld
 
  python -m json.tool nodejs-helloworld/package.json
@@ -119,7 +117,6 @@ oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.tes
 # CMD bash -c "while true; do echo test; sleep 5; done"
 
 # oc new-app --name info --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=rhel7-info
-
 
 # error: chmod: changing permissions of '/tmp/info.sh': Operation not permitted->
 切换为管理员登录 再oc adm policy add-scc-to-user anyuid  -z default -n chapter1
@@ -233,3 +230,5 @@ oc start-build hello -F
 oc new-app --name hello \    
 --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs \   
  http://hello.lab.example.com/app-config 
+
+ # oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
