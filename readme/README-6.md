@@ -12,7 +12,7 @@ oc export is,bc,dc,svc,route,pvc --as-template test \    > ~/test-template.yaml
 
 oc create -f quotes-template.yaml 
 
-grep kind: test-template.yaml
+# grep kind: test-template.yaml
   
 diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clean.yaml \
 
@@ -35,3 +35,18 @@ diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clea
 7. 当用户指定源码创建应用时，可以通过 http://yyyyyy.com 访问应用程序 <====== 这地方说的是 route 的 hostname
 
 8. 当用户创建 app 时，如果没有 route hostname 会提示错误
+
+
+
+
+# oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter1-backup.yaml -n chapter1
+
+oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter3-backup.yaml -n chapter3
+
+oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter4-backup.yaml -n chapter4
+
+oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter5-backup.yaml -n chapter5
+
+oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter6-backup.yaml -n chapter6
+
+oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter7-backup.yaml -n chapter7

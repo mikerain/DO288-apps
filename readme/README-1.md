@@ -23,6 +23,8 @@ oc new-app --name hello -i onbuild-demo/nodejs-8-centos7~https://github.com/woya
 
 # opentlc oc new-app --name hello https://github.com/woyaowoyao/DO288-apps --context-dir=nodejs-helloworld
 
+ oc new-app --name webui-cool https://github.com/woyaowoyao/coolstore-microservice --context-dir=coolstore-ui
+
 curl -X POST -k 
 
  npm config set registry https://registry.npm.taobao.org 
