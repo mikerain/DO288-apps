@@ -1,0 +1,9 @@
+
+
+#Red Hat OpenShift Container Platform 3 Implementation
+
+#1 installl
+
+@todo
+
+#2.ocp管理
