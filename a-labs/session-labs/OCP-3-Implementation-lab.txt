@@ -2,8 +2,127 @@
 
 #Red Hat OpenShift Container Platform 3 Implementation
 
-#1 installl
+# 1 installl
 
 @todo
 
-#2.ocp管理
+# 2.ocp管理
+oc config view 
+oc config view >config.yaml
+oc get pods,svc,dc,bc,builds
+
+oc new-app /path/to/source/code
+
+oc new-app https://github.com/openshift/cakephp-ex
+
+oc new-app https://github.com/openshift/sti-ruby.git \
+    --context-dir=2.0/test/puma-test-app
+	
+oc new-app https://github.com/openshift/ruby-hello-world.git#beta4  #branch
+
+#set --strategy flag to pipeline, source, or docker
+oc new-app /home/user/code/myapp --strategy=docker
+	
+$ oc new-app mysql     #From DockerHub MySQL image
+
+$ oc new-app myregistry:5000/example/myimage	#From image in private registry
+
+oc create -f examples/sample-app/application-template-stibuild.json #导入模板并创建app
+oc new-app ruby-helloworld-sample
+
+oc new-app -f examples/sample-app/application-template-stibuild.json #直接使用模板文件创建app
+
+oc new-app ruby-helloworld-sample \
+    -p ADMIN_USERNAME=admin -p ADMIN_PASSWORD=mypassword  #直接使用模板文件创建app
+	
+oc new-app --search php  #find all images and templates related to PHP
+
+oc new-app https://github.com/openshift/ruby-hello-world -l name=hello-world #创建app并加标签
+
+oc deploy --cancel dc/<name>
+oc deploy --retry dc/<deployment_config>
+oc rollout undo dc/<name>
+oc set triggers dc/<name> --auto
+c logs --version=1 dc/<name>
+
+# lab
+oc login -u andrew -p 'r3dh4t1!'
+oc new-project my-ruby-project --display-name="My Ruby Example Project" --description="A simple project"
+
+oc new-app https://github.com/openshift/ruby-hello-world --name='my-ruby-hello-world' --labels="environment=dev"
+
+oc scale --replicas=3 deploymentconfig my-ruby-hello-world
+
+oc describe replicationcontroller my-ruby-hello-world-1
+
+oc delete project my-ruby-project 
+
+oc new-project custom-s2i-script --display-name="Custom S2I Build Script" \
+    --description="This is the project we use to learn how to create a local build"
+
+https://github.com/woyaowoyao/ruby-hello-world
+
+cd ruby-hello-world
+oc new-app . --docker-image=registry.access.redhat.com/rhscl/ruby-23-rhel7
+
+oc new-project my-custom --display-name='My custom assemble script project' --description="An explanation"
+
+oc new-app https://github.com/woyaowoyao/ruby-hello-world --image-stream=ruby:2.5 --name='my-custom-builder-test'
+
+oc logs my-custom-builder-test-1-build -f
+
+oc delete project custom-s2i-script my-custom
+
+oc new-project lifecycle
+
+oc new-app https://github.com/openshift/ruby-hello-world --strategy=source
+
+oc set env dc/ruby-hello-world MYSQL_USER=mysqluser \
+  MYSQL_PASSWORD=redhat MYSQL_DATABASE=mydb
+
+oc expose service ruby-hello-world	  --name="ruby-hello-world" 
+oc get buildconfig ruby-hello-world -o yaml
+
+oc new-app --search mysql
+
+
+#	oc new-app --template=mysql-ephemeral  --name=database \
+	--param MYSQL_USER=mysqluser --param MYSQL_PASSWORD=redhat \
+--param MYSQL_DATABASE=mydb --param DATABASE_SERVICE_NAME=database
+
+oc set env dc/database --list
+
+	for KEY in database-name database-user database-password; do
+	  echo -n "$KEY: "
+	  oc get secret database -o jsonpath="{.data.$KEY}" | base64 -d
+	  echo
+done
+
+oc delete project lifecycle
+
+# 6 认证授权
+
+oc describe clusterrole.rbac admin basic-user
+
+ oc describe rolebinding.rbac admin basic-user -n chapter2
+ 
+ To allow all service accounts in all projects to view resources in monitored-project:
+$ oc policy add-role-to-group view system:serviceaccounts -n monitored-project
+
+To allow all service accounts in monitor project to edit resources in monitored-project:
+$ oc policy add-role-to-group edit system:serviceaccounts:monitor -n monitored-project
+
+$ oc get scc #自带SCC
+anyuid             false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim secret]
+hostaccess         false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <none>     false            [configMap downwardAPI emptyDir hostPath persistentVolumeClaim secret]
+hostmount-anyuid   false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    <none>     false            [configMap downwardAPI emptyDir hostPath persistentVolumeClaim secret]
+hostnetwork        false     []        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   <none>     false            [configMap downwardAPI emptyDir persistentVolumeClaim secret]
+nonroot            false     []        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    <none>     false            [configMap downwardAPI emptyDir persistentVolumeClaim secret]
+privileged         true      []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    <none>     false            [*]
+restricted         false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <none>     false   
+	
+oc policy can-i --list
+oc policy can-i --list --loglevel=8
+oc policy who-can <verb> <resoruce>
+oc policy who-can pull image
+oc policy who-can deployment image
