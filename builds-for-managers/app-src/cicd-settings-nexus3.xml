@@ -1,0 +1,70 @@
+<settings>
+  <pluginGroups>   
+	  <pluginGroup>io.fabric8</pluginGroup>
+    <pluginGroup>org.springframework.boot</pluginGroup>
+  </pluginGroups>
+  <servers>
+     <server>
+        <id>nexus</id>
+        <username>admin</username>
+        <password>admin123</password>
+     </server>
+     <server>
+        <id>nexus3</id>
+        <username>admin</username>
+        <password>admin123</password>
+     </server>
+	<server>  
+        <id>maven-releases</id>  
+        <username>admin</username>  
+        <password>admin123</password>  
+    </server>	
+	<server>  
+        <id>maven-snapshots</id>  
+        <username>admin</username>  
+        <password>admin123</password>  
+    </server>
+    <server>
+    <id>ocp-register</id>
+    <username>andrew</username>
+    <password>r3dh4t1!</password>
+      <configuration>
+      <email>foo@foo.bar</email>
+    </configuration>
+  </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <!--This sends everything else to /public -->
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://nexus:8081/repository/maven-all-public/</url>
+    </mirror>    
+  </mirrors>
+  <profiles>   
+	  <profile>
+	  <id>nexus</id>
+      	<repositories>  
+        <repository>  
+            <id>nexus</id>  
+            <name>nexus</name>  
+            <url>http://nexus:8081/repository/maven-all-public/</url>  
+            <releases>  
+                <enabled>true</enabled>
+				<!--<updatePolicy>always</updatePolicy>-->                				
+            </releases>  
+            <snapshots>  
+                <enabled>true</enabled>  
+				<!--<updatePolicy>always</updatePolicy>-->
+            </snapshots>  
+        </repository>  
+	</repositories>       
+    </profile>
+  </profiles>
+  
+
+  <activeProfiles>
+    <!--make the profile active all the time -->
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+</settings>
