@@ -1,15 +1,14 @@
-FROM   registry.centos.org/centos/centos:centos7
+FROM jboss/base-jdk:8
 
-MAINTAINER   Red Hat Training <training@redhat.com>
+# https://github.com/OpenShiftDemos/centos-jdk8-maven-docker/blob/master/Dockerfile
+
+USER root
+
+RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin && cd app-src && mvn -s ../cicd-settings-nexus3.xml
 
 # command line options to pass to the JVM
-ENV	  JAVA_OPTIONS -Xmx512m
-
-# Install the Java runtime, create a user for running the app, and set permissions
-RUN   rpm --rebuilddb && \
-      yum install -y --noplugins java-1.8.0-openjdk-headless && \
-      yum clean all --noplugins -y && \
-      mkdir -p /opt/app-root/bin
+ENV	  JAVA_OPTIONS -Xmx512m  
+      
 
 # Copy the runnable fat JAR to the container.
 ADD   app-src/target/builds-for-managers-swarm.jar /opt/app-root/bin/builds-for-managers.jar

@@ -99,13 +99,13 @@ s2i build test/test-app s2i-do288-nginx nginx-test
 
 # docker push myregistry.example.com:5000/s2i-do288-nginx
 
-
 # @4 导入 oc import-image s2i-do288-nginx --from myregistry.example.com:5000/s2i-do288-nginx --confirm --insecure=true
-
 
 # @5 运行 oc new-app --name nginx-test    s2i-do288-nginx~git_repository
 
 [s2i build]
+docker tag ubijava8:1.0 docker-registry-default.apps.c918.example.opentlc.com:5000/ubijava8:1.0
+docker push docker-registry-default.apps.c918.example.opentlc.com:5000/ubijava8:1.0
 
 s2i-do288-httpd]-apache-s2i
 

@@ -155,6 +155,12 @@ oc new-app myis~<源码地址> #OpenShift 进行应用程序 build
 
 # opentlc oc import-image hello-worldn --confirm --from  docker-registry.default.svc:5000/chapter3/hello-world-nginx --insecure 
 
+问题处理->oc rollout latest dc/rabbitmq 报错(brewery2-rabbitmq)
+Error from server (BadRequest): cannot trigger a deployment for "rabbitmq" because it contains unresolved images
+
+解决->
+oc import-image rabbitmq:management --confirm --from  docker.io/rabbitmq:management --insecure
+
 # oc new-project image-stream
 
 # oc policy add-role-to-group -n chapter3 system:image-puller    system:serviceaccounts:image-stream #赋予当前项目组有下载的权限
