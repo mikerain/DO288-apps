@@ -4,7 +4,7 @@ FROM jboss/base-jdk:8
 
 USER root
 
-RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin &&  mvn -s cicd-settings-nexus3.xml
+RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin &&  mvn install 
 
 # command line options to pass to the JVM
 ENV	  JAVA_OPTIONS -Xmx512m        
