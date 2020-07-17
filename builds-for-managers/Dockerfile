@@ -7,8 +7,7 @@ USER root
 RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin && cd app-src && mvn -s ../cicd-settings-nexus3.xml
 
 # command line options to pass to the JVM
-ENV	  JAVA_OPTIONS -Xmx512m  
-      
+ENV	  JAVA_OPTIONS -Xmx512m        
 
 # Copy the runnable fat JAR to the container.
 ADD   app-src/target/builds-for-managers-swarm.jar /opt/app-root/bin/builds-for-managers.jar
@@ -21,6 +20,5 @@ RUN   chgrp -R 0 /opt/app-root && \
 EXPOSE 8080
 
 USER  1001
-
 # Run the fat JAR
 CMD   /opt/app-root/bin/run-app.sh
