@@ -132,7 +132,7 @@ USER 100
 
 git commit -a -m  'FIX'
  
-oc create configmap appconfig \    --from-literal APP_MSG="Elvis lives"
+oc create configmap appconfig \    --from-literal=APP_MSG="Elvis lives"
 
 oc set env dc/hello --from configmap/appconfig
 
@@ -156,9 +156,9 @@ sudo yum install docker-distribution skopeo
  
 skopeo copy --dest-tls-verify=false \    oci:/home/student/DO288/labs/external-registry/rhel7-sleep \    docker://workstation.lab.example.com:5000/rhel7-sleep
 
-oc adm policy add-role-to-user system:registry user_name 
+# oc adm policy add-role-to-user system:registry user_name 
 
-oc adm policy add-role-to-user system:image-builder user_name
+# oc adm policy add-role-to-user system:image-builder user_name
 
 export TOKEN=$(oc whoami -t)
 
@@ -166,7 +166,7 @@ docker login -u myuser -p $TOKEN myregistry.example.com
 
 skopeo copy --creds=myuser:$TOKEN docker://myregistry.example.com/...
 
-oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
+# oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
 oc rollout latest mydcname
 
@@ -180,7 +180,7 @@ oc new-project  source-build
  
 #2020-0523-start 可运行
 
-# oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm
+# oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm --strategy=source
 
 # opentlc_workwell oc new-app --strategy=source -i redhat-openjdk18-openshift:1.4 https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm  #todo 需要设定数据库镜像变量
 
