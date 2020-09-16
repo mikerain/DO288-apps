@@ -2,6 +2,8 @@
 
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=apache-httpd --name apache-httpd #rhel7
 
+oc import-image apache-httpd --confirm  --from docker.io/httpd --insecure #webconsole  Add to Project 
+
 docker pull  registry.access.redhat.com/rhscl/nodejs-6-rhel7
 
 cd DO288-apps-w/onbuild-demo/parent
