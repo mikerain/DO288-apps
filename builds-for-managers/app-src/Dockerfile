@@ -4,9 +4,9 @@ FROM jboss/base-jdk:8
 
 USER root
 
-RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin &&  mvn install 
+RUN yum -y install maven && yum -y clean all && mkdir -p /opt/app-root/bin 
 
-# command line options to pass to the JVM
+# command line options to pass to the JVM &&  mvn install 
 ENV	  JAVA_OPTIONS -Xmx512m        
 
 # Copy the runnable fat JAR to the container.

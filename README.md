@@ -49,6 +49,8 @@ oc delete all -l app=test
 
 oc new-app --strategy docker http://gitserver.example.com/mydockerfileproject
 
+oc new-app  --name dockerbuild --strategy docker  https://github.com/woyaofuwu/Hands-On-Microservices-with-Spring-Boot-and-Spring-Cloud.git --context-dir=Chapter18/microservices/review-service
+
 oc new-app --strategy source http://gitserver.example.com/user/mygitrepo
 
 oc new-app --code http://gitserver.example.com/mygitrepo 
@@ -705,6 +707,7 @@ oc import-image redhat-openjdk18-openshift --confirm  --reference-policy='local'
 
 #Work oc new-app  --name jhost -i redhat-openjdk18-openshift:1.2 https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost
 
+# oc new-app  --name dockerbuild   https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost
 
 oc new-app --name jhost2 -i fuse7-java-openshift:1.1 https://github.com/woyaowoyao/DO288-apps.git --context-dir=java-serverhost#failed no subscriber
 

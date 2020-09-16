@@ -233,4 +233,6 @@ oc new-app --name hello \
 --build-env npm_config_registry=http://services.lab.example.com:8081/nexus/content/groups/nodejs \   
  http://hello.lab.example.com/app-config 
 
+ oc start-build --follow bc/hello 
+ 
  # oc new-app --name hello --build-env npm_config_registry=https://registry.npm.taobao.org --code https://github.com/woyaowoyao/DO288-apps/tree/master/nodejs-helloworld
