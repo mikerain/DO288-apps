@@ -17,6 +17,9 @@ cd DO288-apps-w/onbuild-demo/parent
 # 无法导入本地镜像-》解决方法wokwell
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo/parent --name nginx-parent
 
+
+ # 20200916 oc adm policy add-scc-to-user anyuid -z serviceaccount:default
+
 oc create serviceaccount apacheuser
 
 oc login -u admin -p redhat https://master.lab.example.com
