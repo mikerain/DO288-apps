@@ -28,7 +28,7 @@ sudo docker tag registry.access.redhat.com/rhscl/httpd-24-rhel7   docker.io/robi
 
 sudo oc import-image my-httpd --from=docker.io/robin9999/httpd-24 --confirm
 
-sudo oc import-image httpd-24 --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
+# sudo oc import-image httpd-24 --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
 
 # sudo oc import-image docker-registry.default.svc:5000/openshift/httpd-24:latest --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest    --confirm --insecure=true
 
@@ -41,7 +41,7 @@ oc import-image my-ruby --from=docker.io/openshift/ruby-20-centos7 --confirm
 # oc new-app --name my2hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 
 vi assemble
-#@@@@考试
+# @@@@考试
 ######## CUSTOMIZATION START HERE ############
 
 echo "---> Installing application source"
@@ -146,6 +146,7 @@ https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html#crea
 PDF 202 ，数字页码 184，实验 自定义 s2i 脚本覆盖默认
 
 1. 需要build 一个应用程序，这个应用程序的源码地址 http://services.lab.example.com/s2i-scripts
+# sudo oc import-image httpd-24 --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest -n project-app3 --confirm --insecure=true
 
 # oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
 
