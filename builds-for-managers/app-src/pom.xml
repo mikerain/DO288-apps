@@ -55,21 +55,25 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jpa</artifactId>
+              <version>${version.wildfly.swarm}</version>
         </dependency>
 
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs</artifactId>
+              <version>${version.wildfly.swarm}</version>
         </dependency>
 
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>ejb</artifactId>
+              <version>${version.wildfly.swarm}</version>
         </dependency>
 
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>datasources</artifactId>
+              <version>${version.wildfly.swarm}</version>
         </dependency>
 
         <dependency>
