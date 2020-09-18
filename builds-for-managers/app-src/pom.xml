@@ -84,5 +84,23 @@
         </dependency>
 
     </dependencies>
-
+	<repositories>
+        <repository>
+            <id>aliyun-repos</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id>
+			<url>http://nexus:8081/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven-snapshots</id>
+			<url>http://nexus:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
