@@ -1,6 +1,6 @@
 # Use the httpd-parent image as base
 FROM quay.io/redhattraining/httpd-parent
-LABEL io.openshift.expose-services="8080:http
+LABEL io.openshift.expose-services="8080:http"
 
 RUN sed -i "s/listen 80/listen 8080/g" /etc/nginx.conf
 
