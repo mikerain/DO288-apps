@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.wildfly.swarm>2017.12.1</version.wildfly.swarm>
+        <version.wildfly.swarm>bom-7.0.0.redhat-8</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -20,7 +20,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
-                <artifactId>bom-all</artifactId>
+                <artifactId>bom</artifactId>
                 <version>${version.wildfly.swarm}</version>
                 <scope>import</scope>
                 <type>pom</type>
