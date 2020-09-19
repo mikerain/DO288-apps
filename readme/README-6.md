@@ -16,6 +16,8 @@ oc create -f quotes-template.yaml
   
 diff ~/test-template.yaml \    ~/DO288/labs/create-template/quotes-template-clean.yaml \
 
+ oc get template/redis-persistent -n openshift -o yaml >redis-persistent.yaml
+ 
  oc process --parameters 
   
 # 重点-实验  PDF 242，数字页码 224，手写模板

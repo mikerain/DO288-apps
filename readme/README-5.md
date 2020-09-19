@@ -149,7 +149,9 @@ PDF 202 ，数字页码 184，实验 自定义 s2i 脚本覆盖默认
 
 # sudo oc import-image httpd-24 --from registry.access.redhat.com/rhscl/httpd-24-rhel7:latest -n project-app3 --confirm --insecure=true
 
-# oc new-app --name hello httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
+# oc new-app --name s2iscriptsapp httpd-24~https://github.com/woyaowoyao/DO288-apps.git --context-dir=s2i-scripts
+
+# oc new-app --name s2iscriptsapp httpd:2.4~https://github.com/woyaofuwu/DO288-apps.git --context-dir=s2i-scripts
 
 2. 这个源码中包含了自定义的 s2i 脚本 和 index.html 文件
 
