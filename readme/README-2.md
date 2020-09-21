@@ -11,12 +11,13 @@ cd DO288-apps-w/onbuild-demo/parent
 # sudo docker build -t nginx-parent .
 
 # 无法导入本地镜像 oc import-image nginx-parent --confirm  --from nginx-parent:latest -insecure 
- docker tag    nginx-parent:latest   docker-registry-default.apps.3e92.example.opentlc.com:5000/openshift/nginx-parent:latest 
- docker push docker-registry-default.apps.3e92.example.opentlc.com:5000/openshift/nginx-parent:latest
+ docker tag    nginx-parent:latest   docker-registry-default.apps.f341.example.opentlc.com:5000/openshift/nginx-parent:latest 
+ docker push docker-registry-default.apps.f341.example.opentlc.com:5000/openshift/nginx-parent:latest
 
 # 无法导入本地镜像-》解决方法wokwell
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo/parent --name nginx-parent
 
+oc new-app https://github.com/woyaofuwu/DO288-apps.git --context-dir=onbuild-demo --name onbuild
 
  # 20200916 oc adm policy add-scc-to-user anyuid -z serviceaccount:default
 

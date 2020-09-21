@@ -168,7 +168,7 @@ oc rsh -t hello-1-89mhn
 
 oc get templates -n openshift | grep php | grep mysql 
  
-oc get templates/cakephp-mysql-example -o yaml >cakephp-mysql-example.yaml -n openshift
+# oc get templates/cakephp-mysql-example -o yaml >cakephp-mysql-example.yaml -n openshift
  
 oc new-app --template openshift/cakephp-mysql-example -p NAME=quotesapi   -p APPLICATION_DOMAIN=quotes-do288-cha1.apps.os311.test.it.example.com -p SOURCE_REPOSITORY_URL=http://gogs-cicd.apps.os311.test.it.example.com/root/do288-apps  -p CONTEXT_DIR=quotes -p DATABASE_SERVICE_NAME=quotesdb  -p DATABASE_USER=user1 -p DATABASE_PASSWORD=mypa55   --name quotes
   
