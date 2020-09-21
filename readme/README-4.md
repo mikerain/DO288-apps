@@ -165,6 +165,10 @@ oc set build-hook bc/hook --post-commit --command -- \
 # oc set build-hook bc/hook --post-commit --command -- \
     bash -c "curl -s -S -i -X POST http://hook-chapter4.apps.3e92.example.opentlc.com/api/builds -f -d \"developer=\${DEVELOPER}&git=\${OPENSHIFT_BUILD_SOURCE}&project=\${OPENSHIFT_BUILD_NAMESPACE}\""
 
+# work well 20200921
+# oc set build-hook bc/hook --post-commit --command -- \
+    bin/bash -c "curl  -X POST -k https://master.f341.example.opentlc.com:443/apis/build.openshift.io/v1/namespaces/do288a/buildconfigs/jhost/webhooks/adiZeHrklNPmCduibjnO/generic "
+
 @$$$$$$$$$$$$$$$$$$$$
  
  # oc describe bc/hook | grep Post
