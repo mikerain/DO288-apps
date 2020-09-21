@@ -117,7 +117,7 @@ git clone https://github.com/woyaowoyao/D288-ch1-01-rhel7-7-echo.git
 
 oc new-app --name echo2 --insecure-registry=true http://gogs-cicd.apps.os311.test.it.example.com/root/D288-ch1-01-rhel7-7-echo.git
 
-# oc new-app --name echo --insecure-registry=true https://github.com/woyaowoyao/DO288-apps.git --context-dir=rhel7-echo 
+# oc new-app --name echo --insecure-registry=true https://github.com/woyaofuwu/DO288-apps.git --context-dir=rhel7-echo 
 
 # CMD bash -c "while true; do echo test; sleep 5; done"
 
