@@ -12,7 +12,15 @@ cd DO288-apps-w/onbuild-demo/parent
 
 # 无法导入本地镜像 oc import-image nginx-parent --confirm  --from nginx-parent:latest -insecure 
  docker tag    nginx-parent:latest   docker-registry-default.apps.f341.example.opentlc.com:5000/openshift/nginx-parent:latest 
- docker push docker-registry-default.apps.f341.example.opentlc.com:5000/openshift/nginx-parent:latest
+ 
+oc adm policy add-role-to-user system:registry andrew
+oc adm policy add-role-to-user system:image-builder andrew
+
+export TOKEN=$(oc whoami -t)
+
+docker login -u andrew -p $TOKEN docker-registry-default.apps.f341.example.opentlc.com:5000/
+
+docker push docker-registry-default.apps.f341.example.opentlc.com:5000/openshift/nginx-parent:latest
 
 # 无法导入本地镜像-》解决方法wokwell
 # oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=onbuild-demo/parent --name nginx-parent
@@ -68,7 +76,7 @@ oc edit dc/hell terminationGracePeriodSeconds: 30
 
 # fix-1-end serviceAccountName: apacheuse
 
-# fix-2-start
+# 【fix-2-start】
 
  oc delete serviceaccount apacheuser 
  
@@ -80,10 +88,13 @@ USER 1001
 
 git commit -a -m "fix"
 
-# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build-2 --name container-build2
+# oc new-app https://github.com/woyaofuwu/DO288-apps.git --context-dir=container-build --name container-build
 
-# oc new-app https://github.com/woyaowoyao/DO288-apps.git --context-dir=container-build-2 --name container-build3
 oc delete project container-build
+
+# 【fix-2-end】
+
+
 
 # [container-build]-en
  
@@ -181,7 +192,7 @@ oc new-project  source-build
  
 #2020-0523-start 可运行
 
-# oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm --strategy=source
+ oc new-app docker.io/sibdocker/openjdk18-openshift~https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm --strategy=source
 
 # opentlc_workwell oc new-app --strategy=source -i redhat-openjdk18-openshift:1.4 https://github.com/woyaowoyao/DO288-apps.git --context-dir=todo-api-swarm --name todo-api-swarm  #todo 需要设定数据库镜像变量
 

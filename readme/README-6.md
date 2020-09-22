@@ -52,3 +52,8 @@ oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter5-backup.yaml -n chapt
 oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter6-backup.yaml -n chapter6
 
 oc get --export is,bc,dc,svc,route,pvc  -o yaml  > chapter7-backup.yaml -n chapter7
+
+
+pod=$(oc get pod -l deploymentconfig=quotesdb -o name) 
+
+oc port-forward $(basename ${pod}) 30306:3306 & tunnel=$! sleep 3 echo 'Initializing the database...' mysql -h127.0.0.1 -P30306 -uquoteapp -pmypass quotesdb \    < ~/DO288/labs/create-template/quote.sql sleep 3 echo 'Terminating tunnel...' kill ${tunnel}

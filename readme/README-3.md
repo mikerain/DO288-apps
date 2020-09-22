@@ -120,7 +120,7 @@ This role allows a user to pull images from the internal registry.
 
 export TOKEN=$(oc whoami -t)
 
-# docker login -u myuser -p $TOKEN docker-registry.default.svc:5000 #myregistry.example.com
+# docker login -u andrew -p $TOKEN docker-registry.default.svc:5000 #myregistry.example.com
 
 oc policy add-role-to-group -n img_project system:image-puller \    system:serviceaccounts:app_project
 
