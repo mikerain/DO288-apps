@@ -1,3 +1,10 @@
 #!/bin/bash -e
 echo "---> Copying source HTML files to web server root..." 
 cp -Rf /tmp/src/. /opt/rh/rh-nginx18/root/usr/share/nginx/html/
+
+echo "---> Installation source code"
+cp -Rf /tmp/src/. /opt/rh/rh-nginx18/root/usr/share/nginx/html/
+echo "---> Create page info"
+DATE=`date +%Y-%m-%d`
+echo "Page build on $DATE" >> /opt/rh/rh-nginx18/root/usr/share/nginx/html//info.html
+echo "Astra inclinant, sed non obligant" >> /opt/rh/rh-nginx18/root/usr/share/nginx/html//info.html
